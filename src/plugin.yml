@@ -1,0 +1,34 @@
+name: WarhubChannels
+main: me.cmastudios.plugins.WarhubModChat.WarhubModChat
+version: 0.1
+author: cmastudios
+commands:
+    channel:
+        description: Change your channel
+        usage: |
+            Here's the correct format
+            /<command> <channel>
+        aliases: [ch]
+    global:
+        description: Switch to global
+        usage: |
+            Here's the correct format
+            /<command> (message)
+        aliases: [g]
+    modchat:
+        description: Switch to modchat
+        usage: |
+            Here's the correct format
+            /<command> (message)
+        aliases: [mod, m]
+    alert:
+        description: Switch to alert
+        usage: |
+            Here's the correct format
+            /<command> (message)
+        aliases: [a]
+    say:
+        description: Say a message as the server
+        usage: |
+            Here's the correct format
+            /<command> (message)
