@@ -144,7 +144,15 @@ public class WarhubModChat extends JavaPlugin {
 		}
 		if (cmd.getName().equalsIgnoreCase("channel")) {
 			if (player == null) {log.info("You can't use channels from the console, use '/<say/modchat> <message>' to chat.");return true;}
-
+			if (args.length < 1) {
+			if (!permissions.has(player, "warhub.moderator")) {
+				player.sendMessage(ChatColor.RED + "You're not a mod, and cannot change channels.");
+				return true;
+			} else {
+				player.sendMessage(ChatColor.RED + "Use '/ch <mod/alert/global>' to change your channel.");
+			}
+			return true;
+			}
 			if (args[0].equalsIgnoreCase("mod") || args[0].equalsIgnoreCase("modchat") || args[0].equalsIgnoreCase("m")) {
 				if (!permissions.has(player, "warhub.moderator")) {
 					player.sendMessage(ChatColor.RED + "You don't have the permissions to do that!");
