@@ -29,14 +29,14 @@ public class plrLstnr extends PlayerListener {
     				}
     			}
     			for (Player p : sendto) {
-    				p.sendMessage(Config.read("modchat-format").replace("&", "¤").replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
+    				p.sendMessage(plugin.messageUtil.colorizeText(Config.read("modchat-format")).replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
     			}
     			plugin.log.info("[MODCHAT] "+event.getPlayer().getDisplayName()+": "+event.getMessage());
     			sendto.clear();
     			event.setCancelled(true);
     		}
     		if (plugin.channels.get(event.getPlayer()).equalsIgnoreCase("alert")) {
-    			Bukkit.getServer().broadcastMessage(Config.read("alert-format").replace("&", "¤").replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
+    			Bukkit.getServer().broadcastMessage(plugin.messageUtil.colorizeText(Config.read("alert-format")).replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
     			event.setCancelled(true);
     		}
     	}

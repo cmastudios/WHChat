@@ -20,6 +20,7 @@ import me.cmastudios.plugins.WarhubModChat.util.*;
 public class WarhubModChat extends JavaPlugin {
 
 	Permission permissions = new Permission();
+	Message messageUtil = new Message();
 	String version;
 	Logger log = Logger.getLogger("Minecraft");
 	private final plrLstnr playerListener = new plrLstnr(this);
@@ -70,7 +71,7 @@ public class WarhubModChat extends JavaPlugin {
 	    				}
 	    			}
 	    			for (Player p : sendto) {
-	    				p.sendMessage(Config.read("modchat-format").replace("%player", "tommytony").replace("%message", message).replace("&", "§"));
+	    				p.sendMessage(messageUtil.colorizeText(Config.read("modchat-format").replace("%player", "tommytony").replace("%message", message)));
 	    			}	
 	    			log.info("[MODCHAT] tommytony: "+message);
 	    			sendto.clear();
@@ -192,7 +193,7 @@ public class WarhubModChat extends JavaPlugin {
 		      message = message + arg + " ";
 		    }
 		    if (message.equals("")) return false;
-			this.getServer().broadcastMessage(Config.read("say-format").replace("&", "�").replace("%message", message));
+			this.getServer().broadcastMessage(messageUtil.colorizeText(Config.read("say-format")).replace("%message", message));
 			return true;
 		}
 		return false;
