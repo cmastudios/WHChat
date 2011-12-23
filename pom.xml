@@ -3,7 +3,7 @@
 
   <groupId>me.cmastudios.plugins</groupId>
   <artifactId>WarhubModChat</artifactId>
-  <version>0.1</version>
+  <version>DEV</version>
   <packaging>jar</packaging>
 
   <name>WarhubModChat</name>
