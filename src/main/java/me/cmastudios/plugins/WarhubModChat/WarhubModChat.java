@@ -144,8 +144,8 @@ public class WarhubModChat extends JavaPlugin {
 		}
 		if (cmd.getName().equalsIgnoreCase("channel")) {
 			if (player == null) {log.info("You can't use channels from the console, use '/<say/modchat> <message>' to chat.");return true;}
-			String arg = (String) args[0].toLowerCase();
-			if (arg.equals("mod") || arg.equals("modchat") || arg.equals("m")) {
+
+			if (args[0].equalsIgnoreCase("mod") || args[0].equalsIgnoreCase("modchat") || args[0].equalsIgnoreCase("m")) {
 				if (!permissions.has(player, "warhub.moderator")) {
 					player.sendMessage(ChatColor.RED + "You don't have the permissions to do that!");
 					return true;
@@ -154,7 +154,7 @@ public class WarhubModChat extends JavaPlugin {
 				player.sendMessage(ChatColor.YELLOW + "Chat switched to mod.");
 				return true;
                                 }
-			if (arg.equals("a") || arg.equals("alert")) {
+			if (args[0].equalsIgnoreCase("a") || args[0].equalsIgnoreCase("alert")) {
 				if (!permissions.has(player, "warhub.moderator")) {
 					player.sendMessage(ChatColor.RED + "You don't have the permissions to do that!");
 					return true;
@@ -163,7 +163,7 @@ public class WarhubModChat extends JavaPlugin {
 				player.sendMessage(ChatColor.YELLOW + "Chat switched to alert.");
 				return true;
                                 }
-			if (arg.equals("g") || arg.equals("global")) {
+			if (args[0].equalsIgnoreCase("g") || args[0].equalsIgnoreCase("global")) {
 				channels.remove(player);
 				player.sendMessage(ChatColor.YELLOW + "Chat switched to global.");
 				return true;
