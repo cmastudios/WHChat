@@ -6,7 +6,6 @@ import java.util.List;
 import me.cmastudios.plugins.WarhubModChat.util.Config;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -20,6 +19,9 @@ public class plrLstnr extends PlayerListener {
     }
     @SuppressWarnings("static-access")
 	public void onPlayerChat (PlayerChatEvent event) {
+    	if (event.getMessage().contains("\u00A7") && !plugin.permissions.has(event.getPlayer(), "warhub.moderator")) {
+    		event.setMessage(event.getMessage().replaceAll("\u00A7[0-9a-fA-FkK]", ""));
+    	}
     	if (plugin.channels.containsKey(event.getPlayer())) {
     		if (plugin.channels.get(event.getPlayer()).equalsIgnoreCase("mod")) {
     			List<Player> sendto = new ArrayList<Player>();
