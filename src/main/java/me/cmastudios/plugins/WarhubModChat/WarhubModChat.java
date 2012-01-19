@@ -206,6 +206,7 @@ public class WarhubModChat extends JavaPlugin {
 			ignores.put(player, "");
 			player.sendMessage(ChatColor.YELLOW + "Deafened.");
 			}
+			return true;
 		}
 		if (cmd.getName().equalsIgnoreCase("me")) {
 			String message = "";
@@ -217,6 +218,7 @@ public class WarhubModChat extends JavaPlugin {
 			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 		        if (!ignores.containsKey(p)) p.sendMessage( "* " + player.getDisplayName() + " " + message);
 		      }
+			return true;
 		}
 		return false;
 	}
