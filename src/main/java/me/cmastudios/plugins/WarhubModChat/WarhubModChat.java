@@ -25,6 +25,8 @@ public class WarhubModChat extends JavaPlugin {
 	Logger log = Logger.getLogger("Minecraft");
 	private final plrLstnr playerListener = new plrLstnr(this);
 	public HashMap<Player, String> channels = new HashMap<Player, String>();
+	public HashMap<Player, String> ignores = new HashMap<Player, String>();
+
 	@Override
 	public void onDisable() {
 		channels.clear();
@@ -195,6 +197,26 @@ public class WarhubModChat extends JavaPlugin {
 		    if (message.equals("")) return false;
 			this.getServer().broadcastMessage(messageUtil.colorizeText(Config.read("say-format")).replace("%message", message));
 			return true;
+		}
+		if (cmd.getName().equalsIgnoreCase("deaf")) {
+			if (ignores.containsKey(player)) {
+				ignores.remove(player);
+				player.sendMessage(ChatColor.YELLOW + "Un-deafened.");
+			} else {
+			ignores.put(player, "");
+			player.sendMessage(ChatColor.YELLOW + "Deafened.");
+			}
+		}
+		if (cmd.getName().equalsIgnoreCase("me")) {
+			String message = "";
+		      for (String arg : args) {
+		        message = message + arg + " ";
+		      }
+		      if (message == "") return false;
+		      if (message == " ") return false;
+			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+		        if (!ignores.containsKey(p)) p.sendMessage( "* " + player.getDisplayName() + " " + message);
+		      }
 		}
 		return false;
 	}

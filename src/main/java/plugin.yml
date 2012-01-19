@@ -32,3 +32,9 @@ commands:
         usage: |
             Here's the correct format
             /<command> (message)
+    me:
+        description: Say an action message
+        usage: /<command>
+    deaf:
+        description: Block all other player's chat out
+        usage: /<command>

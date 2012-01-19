@@ -19,6 +19,9 @@ public class plrLstnr extends PlayerListener {
     }
     @SuppressWarnings("static-access")
 	public void onPlayerChat (PlayerChatEvent event) {
+    	for (Player plr: event.getRecipients()) {
+    		if (plugin.ignores.containsKey(plr)) event.getRecipients().remove(plr);
+    	}
     	if (event.getMessage().contains("\u00A7") && !plugin.permissions.has(event.getPlayer(), "warhub.moderator")) {
     		event.setMessage(event.getMessage().replaceAll("\u00A7[0-9a-fA-FkK]", ""));
     	}
