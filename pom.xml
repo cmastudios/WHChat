@@ -8,6 +8,12 @@
 
   <name>WarhubModChat</name>
   <url>http://cmastudios.me/plugins/</url>
+  <repositories>
+        <repository>
+            <id>bukkit-repo</id>
+            <url>http://repo.bukkit.org/artifactory/repo</url>
+        </repository>
+    </repositories>
   <build>
       <plugins>
           <plugin>
@@ -35,14 +41,8 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.0.1-R1</version>
+      <version>1.1-R1</version>
       <scope>compile</scope>
-    </dependency>
-    <dependency>
-    	<groupId>org.bukkit</groupId>
-    	<artifactId>craftbukkit</artifactId>
-    	<version>1.0.1-R1</version>
-    	<scope>compile</scope>
     </dependency>
     <dependency>
     	<groupId>com.nijikokun.bukkit</groupId>
