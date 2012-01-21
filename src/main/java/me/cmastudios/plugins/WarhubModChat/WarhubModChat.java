@@ -200,7 +200,7 @@ public class WarhubModChat extends JavaPlugin {
 			player.sendMessage(ChatColor.YELLOW + "Deafened players:");
 			String plrs = "";
 			for (Player plr : ignores.keySet()) {
-				plrs += plr + ", ";
+				plrs += plr.getDisplayName() + ", ";
 			}
 			player.sendMessage(ChatColor.YELLOW + plrs);
 			player.sendMessage(ChatColor.YELLOW + "Use /deafen to deafen yourself.");
