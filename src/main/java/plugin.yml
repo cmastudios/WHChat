@@ -36,5 +36,8 @@ commands:
         description: Say an action message
         usage: /<command>
     deaf:
+        description: See all deafened players
+        usage: /<command>
+    deafen:
         description: Block all other player's chat out
         usage: /<command>

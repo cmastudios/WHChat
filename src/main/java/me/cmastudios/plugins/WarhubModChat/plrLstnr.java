@@ -2,25 +2,31 @@ package me.cmastudios.plugins.WarhubModChat;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import me.cmastudios.plugins.WarhubModChat.util.Config;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
 
-public class plrLstnr extends PlayerListener {
+public class plrLstnr implements Listener {
 	public static WarhubModChat plugin;
 	 
     public plrLstnr(WarhubModChat instance) {
         plugin = instance;
     }
     @SuppressWarnings("static-access")
-	public void onPlayerChat (PlayerChatEvent event) {
-    	for (Player plr: event.getRecipients()) {
-    		if (plugin.ignores.containsKey(plr)) event.getRecipients().remove(plr);
+    @EventHandler(event = PlayerChatEvent.class, priority = EventPriority.HIGHEST)
+	public void onPlayerChat (final PlayerChatEvent event) {
+    	ArrayList<Player> plrs = new ArrayList<Player>();
+    	for (Player plr : plugin.getServer().getOnlinePlayers()) {
+    		if (plugin.ignores.containsKey(plr)) plrs.add(plr);
+    	}
+    	for (Player plr : plrs) {
+    		event.getRecipients().remove(plr);
     	}
     	if (event.getMessage().contains("\u00A7") && !plugin.permissions.has(event.getPlayer(), "warhub.moderator")) {
     		event.setMessage(event.getMessage().replaceAll("\u00A7[0-9a-fA-FkK]", ""));
@@ -46,7 +52,8 @@ public class plrLstnr extends PlayerListener {
     		}
     	}
     }
-    public void onPlayerJoin (PlayerJoinEvent event) {
+    @EventHandler(event = PlayerJoinEvent.class, priority = EventPriority.LOW)
+    public void onPlayerJoin (final PlayerJoinEvent event) {
     	plugin.channels.remove(event.getPlayer());
     }
 

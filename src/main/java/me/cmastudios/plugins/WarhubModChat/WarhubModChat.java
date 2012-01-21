@@ -10,7 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,8 +37,7 @@ public class WarhubModChat extends JavaPlugin {
 		permissions.setupPermissions();
 		Config.setup();
 		PluginManager pm = this.getServer().getPluginManager();
-		pm.registerEvent(Event.Type.PLAYER_CHAT, this.playerListener, Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_JOIN, this.playerListener, Event.Priority.Low, this);
+		pm.registerEvents(playerListener, this);
 		PluginDescriptionFile pdffile = this.getDescription();
 	    version = pdffile.getVersion();
 		log.info("[WarhubModChat] Version " + version + " by cmastudios enabled!");	
@@ -199,6 +197,16 @@ public class WarhubModChat extends JavaPlugin {
 			return true;
 		}
 		if (cmd.getName().equalsIgnoreCase("deaf")) {
+			player.sendMessage(ChatColor.YELLOW + "Deafened players:");
+			String plrs = "";
+			for (Player plr : ignores.keySet()) {
+				plrs += plr + ", ";
+			}
+			player.sendMessage(ChatColor.YELLOW + plrs);
+			player.sendMessage(ChatColor.YELLOW + "Use /deafen to deafen yourself.");
+			return true;
+		}
+		if (cmd.getName().equalsIgnoreCase("deafen")) {
 			if (ignores.containsKey(player)) {
 				ignores.remove(player);
 				player.sendMessage(ChatColor.YELLOW + "Un-deafened.");
