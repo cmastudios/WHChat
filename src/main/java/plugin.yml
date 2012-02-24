@@ -1,43 +1,38 @@
-name: WarhubChannels
+name: WHChat
 main: me.cmastudios.plugins.WarhubModChat.WarhubModChat
-version: 0.1
+version: 0.2.1(2/24/12)
 author: cmastudios
+description: |
+    Custom Chat plugin for the Warhub Server (warhub.tommytony.com).
+website: http://war.tommytony.com/
 commands:
     channel:
         description: Change your channel
-        usage: |
-            Here's the correct format
-            /<command> <channel>
+        usage: /<command> <channel>
         aliases: [ch]
     global:
         description: Switch to global
-        usage: |
-            Here's the correct format
-            /<command> (message)
+        usage: /<command> (message)
         aliases: [g]
     modchat:
         description: Switch to modchat
-        usage: |
-            Here's the correct format
-            /<command> (message)
+        usage: /<command> (message)
         aliases: [mod, m]
     alert:
         description: Switch to alert
-        usage: |
-            Here's the correct format
-            /<command> (message)
-        aliases: [a]
+        usage: /<command> (message)
+        aliases: [a, broadcast]
     say:
         description: Say a message as the server
-        usage: |
-            Here's the correct format
-            /<command> (message)
+        usage: /<command> (message)
     me:
         description: Say an action message
-        usage: /<command>
+        usage: /<command> (message)
     deaf:
-        description: See all deafened players
-        usage: /<command>
-    deafen:
-        description: Block all other player's chat out
-        usage: /<command>
+        description: List deafened players or deafen a player.
+        usage: /<command> (player)
+        aliases: [deafen, undeafen]
+    mute:
+        description: List muted players or mute a player
+        usage: /<command> (player)
+        aliases: [muted, unmute, mutedplayers]

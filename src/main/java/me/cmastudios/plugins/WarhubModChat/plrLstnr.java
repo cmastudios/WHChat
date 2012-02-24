@@ -5,6 +5,7 @@ import java.util.List;
 import me.cmastudios.plugins.WarhubModChat.util.Config;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,9 +19,15 @@ public class plrLstnr implements Listener {
     public plrLstnr(WarhubModChat instance) {
         plugin = instance;
     }
-    @SuppressWarnings("static-access")
-    @EventHandler(event = PlayerChatEvent.class, priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat (final PlayerChatEvent event) {
+    	Player player = event.getPlayer();
+    	if (plugin.mutedplrs.containsKey(player)) {
+    		event.setCancelled(true);
+    		player.sendMessage(ChatColor.RED + "You are muted.");
+    		return;
+    	}
+    	event.setMessage(Capslock(player, event.getMessage()));
     	ArrayList<Player> plrs = new ArrayList<Player>();
     	for (Player plr : plugin.getServer().getOnlinePlayers()) {
     		if (plugin.ignores.containsKey(plr)) plrs.add(plr);
@@ -28,33 +35,82 @@ public class plrLstnr implements Listener {
     	for (Player plr : plrs) {
     		event.getRecipients().remove(plr);
     	}
-    	if (event.getMessage().contains("\u00A7") && !plugin.permissions.has(event.getPlayer(), "warhub.moderator")) {
+    	if (event.getMessage().contains("\u00A7") && !player.hasPermission("warhub.moderator")) {
     		event.setMessage(event.getMessage().replaceAll("\u00A7[0-9a-fA-FkK]", ""));
     	}
     	if (plugin.channels.containsKey(event.getPlayer())) {
     		if (plugin.channels.get(event.getPlayer()).equalsIgnoreCase("mod")) {
-    			List<Player> sendto = new ArrayList<Player>();
-    			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-    				if (plugin.permissions.has(p, "warhub.moderator")) {
-    					sendto.add(p);
-    				}
-    			}
-    			for (Player p : sendto) {
-    				p.sendMessage(plugin.messageUtil.colorizeText(Config.read("modchat-format")).replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
-    			}
-    			plugin.log.info("[MODCHAT] "+event.getPlayer().getDisplayName()+": "+event.getMessage());
-    			sendto.clear();
     			event.setCancelled(true);
+    			sendToMods(plugin.messageUtil.colorizeText(Config.read("modchat-format")).replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
+    			plugin.log.info("[MODCHAT] "+event.getPlayer().getDisplayName()+": "+event.getMessage());
     		}
     		if (plugin.channels.get(event.getPlayer()).equalsIgnoreCase("alert")) {
-    			Bukkit.getServer().broadcastMessage(plugin.messageUtil.colorizeText(Config.read("alert-format")).replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
     			event.setCancelled(true);
+    			Bukkit.getServer().broadcastMessage(plugin.messageUtil.colorizeText(Config.read("alert-format")).replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
     		}
     	}
+    	
     }
-    @EventHandler(event = PlayerJoinEvent.class, priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerJoin (final PlayerJoinEvent event) {
     	plugin.channels.remove(event.getPlayer());
+    	plugin.ignores.remove(event.getPlayer());
     }
+    private String Capslock(Player player, String message)
+    {
+      int countChars = 0;
+      int countCharsCaps = 0;
+      boolean on = true;
 
+        if (player.hasPermission("warhub.moderator") || (player.isOp()))
+          on = false;
+        else {
+          on = true;
+        }
+
+      
+
+      if (on) {
+        countChars = message.length();
+        if ((countChars > 0) && 
+          (countChars > 8)) {
+          for (int i = 0; i < countChars; i++) {
+            char c = message.charAt(i);
+            String ch = Character.toString(c);
+            if (ch.matches("[A-Z]")) {
+              countCharsCaps++;
+            }
+          }
+          if (100 / countChars * countCharsCaps >= 40) {
+        	  //Message has too many capital letters
+              message = message.toLowerCase();
+              plugin.warnings.put(player, getWarnings(player)+1);
+              player.sendMessage(ChatColor.YELLOW + "Do not type in all caps ["+getWarnings(player)+" Violations]");
+              sendToMods(ChatColor.DARK_RED+"[WHChat] "+ChatColor.WHITE+player.getDisplayName() + ChatColor.YELLOW + " all caps'd ["+getWarnings(player)+" Violations]");
+          }
+        }
+
+      }
+      return message;
+    }
+    private int getWarnings (Player key) {
+    	if (plugin.warnings.get(key) != null) {
+    		return plugin.warnings.get(key);
+    	}
+    	else {
+    		plugin.warnings.put(key, 0);
+    	}
+    	return 0;
+    }
+    private void sendToMods (String message) {
+		List<Player> sendto = new ArrayList<Player>();
+		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+			if (p.hasPermission("warhub.moderator")) {
+				sendto.add(p);
+			}
+		}
+		for (Player p : sendto) {
+			p.sendMessage(message);
+		}
+    }
 }
