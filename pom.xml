@@ -38,7 +38,6 @@
       </resources>
   </build>
   <dependencies>
-    <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
@@ -46,7 +45,6 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-    </dependencies>
     <dependency>
     	<groupId>com.nijikokun.bukkit</groupId>
     	<artifactId>Permissions</artifactId>
