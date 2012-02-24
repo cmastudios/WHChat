@@ -26,8 +26,8 @@ public class WarhubModChat extends JavaPlugin {
 	private final plrLstnr playerListener = new plrLstnr(this);
 	public HashMap<Player, String> channels = new HashMap<Player, String>();
 	public HashMap<Player, String> ignores = new HashMap<Player, String>();
-	public HashMap<Player, Integer> mutedplrs = new HashMap<Player, Integer>();
-	public HashMap<Player, Integer> warnings = new HashMap<Player, Integer>();
+	public HashMap<String, Integer> mutedplrs = new HashMap<String, Integer>();
+	public HashMap<String, Integer> warnings = new HashMap<String, Integer>();
 
 	@Override
 	public void onDisable() {
@@ -50,8 +50,8 @@ public class WarhubModChat extends JavaPlugin {
 		permissions.setupPermissions();
 		Config.setup();
 		try {
-			warnings = (HashMap<Player, Integer>) SLAPI.load("warnings.bin");
-			mutedplrs = (HashMap<Player, Integer>) SLAPI.load("mutedplrs.bin");
+			warnings = (HashMap<String, Integer>) SLAPI.load("warnings.bin");
+			mutedplrs = (HashMap<String, Integer>) SLAPI.load("mutedplrs.bin");
 		} catch (Exception e) {
 			log.severe("[WarhubModChat] Failed to load data!");
 			e.printStackTrace();
@@ -271,8 +271,8 @@ public class WarhubModChat extends JavaPlugin {
 				player.sendMessage(ChatColor.YELLOW
 						+ "Use /deaf <player> to deafen someone.");
 				return true;
-			} else if (args.length == 2) {
-				Player todeafen = PlayerInfo.toPlayer(args[1]);
+			} else if (args.length == 1) {
+				Player todeafen = PlayerInfo.toPlayer(args[0]);
 				if (todeafen == player) {
 					if (ignores.containsKey(player)) {
 						ignores.remove(player);
@@ -307,7 +307,7 @@ public class WarhubModChat extends JavaPlugin {
 			return false;
 		}
 		if (cmd.getName().equalsIgnoreCase("me")) {
-	    	if (mutedplrs.containsKey(player)) {
+	    	if (mutedplrs.containsKey(player.getName())) {
 	    		player.sendMessage(ChatColor.RED + "You are muted.");
 	    		return true;
 	    	}
@@ -336,34 +336,34 @@ public class WarhubModChat extends JavaPlugin {
 			if (args.length < 1) {
 				player.sendMessage(ChatColor.YELLOW + "Muted players:");
 				String plrs = "";
-				for (Player plr : mutedplrs.keySet()) {
-					plrs += plr.getDisplayName() + ", ";
+				for (String plr : mutedplrs.keySet()) {
+					plrs += plr + ", ";
 				}
 				player.sendMessage(ChatColor.YELLOW + plrs);
 				player.sendMessage(ChatColor.YELLOW
 						+ "Use /mute <player> to mute someone.");
 				return true;
-			} else if (args.length == 2) {
-				Player todeafen = PlayerInfo.toPlayer(args[1]);
+			} else if (args.length == 1) {
+				Player todeafen = PlayerInfo.toPlayer(args[0]);
 				if (todeafen == player && player.hasPermission("warhub.moderator")) {
-					if (mutedplrs.containsKey(player)) {
-						mutedplrs.remove(player);
+					if (mutedplrs.containsKey(player.getName())) {
+						mutedplrs.remove(player.getName());
 						todeafen.sendMessage(ChatColor.YELLOW
 								+ "You have been unmuted.");
 					} else {
-						mutedplrs.put(player, 1);
+						mutedplrs.put(player.getName(), 1);
 						todeafen.sendMessage(ChatColor.YELLOW
 								+ "You have been muted.");
 					}
 				} else if (player.hasPermission("warhub.moderator")) {
-					if (mutedplrs.containsKey(todeafen)) {
-						mutedplrs.remove(todeafen);
+					if (mutedplrs.containsKey(todeafen.getName())) {
+						mutedplrs.remove(todeafen.getName());
 						player.sendMessage(ChatColor.YELLOW
 								+ todeafen.getName() + " has been unmuted.");
 						todeafen.sendMessage(ChatColor.YELLOW
 								+ "You have been unmuted.");
 					} else {
-						mutedplrs.put(todeafen, 1);
+						mutedplrs.put(todeafen.getName(), 1);
 						player.sendMessage(ChatColor.YELLOW
 								+ todeafen.getName() + " has been muted.");
 						todeafen.sendMessage(ChatColor.YELLOW

@@ -22,7 +22,7 @@ public class plrLstnr implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat (final PlayerChatEvent event) {
     	Player player = event.getPlayer();
-    	if (plugin.mutedplrs.containsKey(player)) {
+    	if (plugin.mutedplrs.containsKey(player.getName())) {
     		event.setCancelled(true);
     		player.sendMessage(ChatColor.RED + "You are muted.");
     		return;
@@ -84,7 +84,7 @@ public class plrLstnr implements Listener {
           if (100 / countChars * countCharsCaps >= 40) {
         	  //Message has too many capital letters
               message = message.toLowerCase();
-              plugin.warnings.put(player, getWarnings(player)+1);
+              plugin.warnings.put(player.getName(), getWarnings(player)+1);
               player.sendMessage(ChatColor.YELLOW + "Do not type in all caps ["+getWarnings(player)+" Violations]");
               sendToMods(ChatColor.DARK_RED+"[WHChat] "+ChatColor.WHITE+player.getDisplayName() + ChatColor.YELLOW + " all caps'd ["+getWarnings(player)+" Violations]");
           }
@@ -94,11 +94,11 @@ public class plrLstnr implements Listener {
       return message;
     }
     private int getWarnings (Player key) {
-    	if (plugin.warnings.get(key) != null) {
-    		return plugin.warnings.get(key);
+    	if (plugin.warnings.get(key.getName()) != null) {
+    		return plugin.warnings.get(key.getName());
     	}
     	else {
-    		plugin.warnings.put(key, 0);
+    		plugin.warnings.put(key.getName(), 0);
     	}
     	return 0;
     }
