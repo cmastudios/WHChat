@@ -302,7 +302,7 @@ public class WarhubModChat extends JavaPlugin {
 					player.sendMessage(ChatColor.RED
 							+ "You do not have permissions to deafen others.");
 				}
-				return false;
+				return true;
 			}
 			return false;
 		}
@@ -374,7 +374,7 @@ public class WarhubModChat extends JavaPlugin {
 					player.sendMessage(ChatColor.RED
 							+ "You do not have permissions to mute players.");
 				}
-				return false;
+				return true;
 			}
 			return false;
 		}
