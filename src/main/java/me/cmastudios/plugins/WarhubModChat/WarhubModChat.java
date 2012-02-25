@@ -28,6 +28,7 @@ public class WarhubModChat extends JavaPlugin {
 	public HashMap<Player, String> ignores = new HashMap<Player, String>();
 	public HashMap<String, Integer> mutedplrs = new HashMap<String, Integer>();
 	public HashMap<String, Integer> warnings = new HashMap<String, Integer>();
+	public HashMap<Player, String> spamcheck = new HashMap<Player, String>();
 
 	@Override
 	public void onDisable() {

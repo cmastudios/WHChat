@@ -27,6 +27,13 @@ public class plrLstnr implements Listener {
     		player.sendMessage(ChatColor.RED + "You are muted.");
     		return;
     	}
+    	if (plugin.spamcheck.containsKey(player)) {
+    		if (event.getMessage().equalsIgnoreCase(plugin.spamcheck.get(player)) && !player.hasPermission("warhub.moderator")) {
+    			player.sendMessage(ChatColor.RED + "You cannot send the same message twice in a row");
+    			event.setCancelled(true);
+    		}
+    	}
+    	plugin.spamcheck.put(player, event.getMessage());
     	event.setMessage(Capslock(player, event.getMessage()));
     	ArrayList<Player> plrs = new ArrayList<Player>();
     	for (Player plr : plugin.getServer().getOnlinePlayers()) {
