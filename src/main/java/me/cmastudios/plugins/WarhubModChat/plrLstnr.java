@@ -16,13 +16,13 @@ import org.dynmap.DynmapCommonAPI;
 
 public class plrLstnr implements Listener {
 	public static WarhubModChat plugin;
-	DynmapCommonAPI dynmap;
     public plrLstnr(WarhubModChat instance) {
         plugin = instance;
-        dynmap = (DynmapCommonAPI)plugin.getServer().getPluginManager().getPlugin("dynmap");
     }
     @EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat (final PlayerChatEvent event) {
+    	DynmapCommonAPI dynmap = (DynmapCommonAPI)plugin.getServer().getPluginManager().getPlugin("dynmap");
+
     	Player player = event.getPlayer();
     	if (plugin.mutedplrs.containsKey(player.getName())) {
     		event.setCancelled(true);
