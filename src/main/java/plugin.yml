@@ -2,6 +2,7 @@ name: WHChat
 main: me.cmastudios.plugins.WarhubModChat.WarhubModChat
 version: 0.2.1(2/24/12)
 author: cmastudios
+depend: [dynmap]
 description: |
     Custom Chat plugin for the Warhub Server (warhub.tommytony.com).
 website: http://war.tommytony.com/
