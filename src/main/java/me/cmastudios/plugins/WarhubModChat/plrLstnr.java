@@ -57,7 +57,7 @@ public class plrLstnr implements Listener {
     		if (plugin.channels.get(event.getPlayer()).equalsIgnoreCase("alert")) {
     			event.setCancelled(true);
     			Bukkit.getServer().broadcastMessage(plugin.messageUtil.colorizeText(Config.read("alert-format")).replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
-    			dynmap.sendBroadcastToWeb("Attention:", event.getMessage());
+    			dynmap.sendBroadcastToWeb("Attention", event.getMessage());
     		}
     	} else {
 			dynmap.setDisableChatToWebProcessing(false);
