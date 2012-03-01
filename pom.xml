@@ -38,6 +38,13 @@
       </resources>
   </build>
   <dependencies>
+  	        <dependency>
+            <groupId>org.dynmap</groupId>
+            <artifactId>DynmapAPI</artifactId>
+            <version>0.33</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>

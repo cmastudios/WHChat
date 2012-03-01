@@ -12,12 +12,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.dynmap.DynmapCommonAPI;
 
 public class plrLstnr implements Listener {
 	public static WarhubModChat plugin;
-	 
+	DynmapCommonAPI dynmap;
     public plrLstnr(WarhubModChat instance) {
         plugin = instance;
+        dynmap = (DynmapCommonAPI)plugin.getServer().getPluginManager().getPlugin("dynmap");
     }
     @EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat (final PlayerChatEvent event) {
@@ -46,6 +48,7 @@ public class plrLstnr implements Listener {
     		event.setMessage(event.getMessage().replaceAll("\u00A7[0-9a-fA-FkK]", ""));
     	}
     	if (plugin.channels.containsKey(event.getPlayer())) {
+			dynmap.setDisableChatToWebProcessing(true);
     		if (plugin.channels.get(event.getPlayer()).equalsIgnoreCase("mod")) {
     			event.setCancelled(true);
     			sendToMods(plugin.messageUtil.colorizeText(Config.read("modchat-format")).replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
@@ -54,7 +57,10 @@ public class plrLstnr implements Listener {
     		if (plugin.channels.get(event.getPlayer()).equalsIgnoreCase("alert")) {
     			event.setCancelled(true);
     			Bukkit.getServer().broadcastMessage(plugin.messageUtil.colorizeText(Config.read("alert-format")).replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
+    			dynmap.sendBroadcastToWeb("Attention:", event.getMessage());
     		}
+    	} else {
+			dynmap.setDisableChatToWebProcessing(false);
     	}
     	
     }

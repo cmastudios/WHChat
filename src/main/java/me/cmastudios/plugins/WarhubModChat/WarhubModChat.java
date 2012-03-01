@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.dynmap.DynmapAPI;
 
 import me.cmastudios.plugins.WarhubModChat.util.*;
 import me.cmastudios.plugins.WarhubModChat.SLAPI;
@@ -39,10 +40,10 @@ public class WarhubModChat extends JavaPlugin {
 			SLAPI.save(mutedplrs, "mutedplrs.bin");
 			mutedplrs.clear();
 		} catch (Exception e) {
-			log.severe("[WarhubModChat] Failed to save data!");
+			log.severe("[WHChat] Failed to save data!");
 			e.printStackTrace();
 		}
-		log.info("[WarhubModChat] Disabled!");
+		log.info("[WHChat] Disabled!");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -54,14 +55,21 @@ public class WarhubModChat extends JavaPlugin {
 			warnings = (HashMap<String, Integer>) SLAPI.load("warnings.bin");
 			mutedplrs = (HashMap<String, Integer>) SLAPI.load("mutedplrs.bin");
 		} catch (Exception e) {
-			log.severe("[WarhubModChat] Failed to load data!");
+			log.severe("[WHChat] Failed to load data!");
 			e.printStackTrace();
 		}
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvents(playerListener, this);
+		DynmapAPI dynmap = (DynmapAPI)getServer().getPluginManager().getPlugin("dynmap");
+		if(dynmap == null || !((org.bukkit.plugin.Plugin)dynmap).isEnabled()) {
+			log.info("[WHChat] dynmap not loaded, disabling plugin.");
+			pm.disablePlugin(((org.bukkit.plugin.Plugin) (this)));
+			return;
+		}
+
 		PluginDescriptionFile pdffile = this.getDescription();
 		version = pdffile.getVersion();
-		log.info("[WarhubModChat] Version " + version
+		log.info("[WHChat] Version " + version
 				+ " by cmastudios enabled!");
 	}
 
