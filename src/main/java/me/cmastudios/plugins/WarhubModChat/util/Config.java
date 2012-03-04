@@ -1,31 +1,26 @@
 package me.cmastudios.plugins.WarhubModChat.util;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Config {
 	public static FileConfiguration config;
-	static String mainDirectory = "plugins/WarhubModChat";
+	static String mainDirectory = "plugins/WHChat";
 	static File file = new File(mainDirectory + File.separator + "config.yml");
 	public static void setup(FileConfiguration config) {
 		new File(mainDirectory).mkdir();
 		Config.config = config;
-		/*if(!file.exists()){
-		            try {
-		                file.createNewFile();
-		                write("modchat-format", "&2Modchat> &a%player: %message");
-		                write("alert-format", "&4Attention> &c%message");
-		                write("say-format", "&5Server> &d%message");
-		        		Configuration CONFIG = load();
-		        		CONFIG.setHeader(
-		        				"# Auto-generated config for WarhubModChat",
-		        				"#");
-		        		CONFIG.save();
-		            } catch (Exception ex) {
-		                ex.printStackTrace();
-		            }*/
+		if (config.get("modchat-format")==null)config.set("modchat-format", "&2Modchat> &a%player: %message");
+		if (config.get("alert-format")==null)config.set("alert-format", "&4Attention> &c%message");
+		if (config.get("say-format")==null)config.set("say-format", "&5Server> &d%message");
+		try {
+			config.save(file);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+	}
 		
 		
 	
