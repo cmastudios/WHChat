@@ -1,30 +1,30 @@
 package me.cmastudios.plugins.WarhubModChat;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.dynmap.DynmapAPI;
 
+import me.cmastudios.plugins.WarhubModChat.commands.ChannelCommand;
+import me.cmastudios.plugins.WarhubModChat.commands.DeafCommand;
+import me.cmastudios.plugins.WarhubModChat.commands.MeCommand;
+import me.cmastudios.plugins.WarhubModChat.commands.MuteCommand;
+import me.cmastudios.plugins.WarhubModChat.commands.QuickMessageCommand;
+import me.cmastudios.plugins.WarhubModChat.commands.SayCommand;
 import me.cmastudios.plugins.WarhubModChat.util.*;
 import me.cmastudios.plugins.WarhubModChat.SLAPI;
 
 public class WarhubModChat extends JavaPlugin {
 
-	Permission permissions = new Permission();
+	//Permission permissions = new Permission();
 	Message messageUtil = new Message();
 	String version;
 	Logger log = Logger.getLogger("Minecraft");
-	private final plrLstnr playerListener = new plrLstnr(this);
+	private final WarhubModChatListener Listener = new WarhubModChatListener(this);
 	public HashMap<Player, String> channels = new HashMap<Player, String>();
 	public HashMap<Player, String> ignores = new HashMap<Player, String>();
 	public HashMap<String, Integer> mutedplrs = new HashMap<String, Integer>();
@@ -49,8 +49,8 @@ public class WarhubModChat extends JavaPlugin {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable() {
-		permissions.setupPermissions();
-		Config.setup();
+		//permissions.setupPermissions();
+		Config.setup(getConfig());
 		try {
 			warnings = (HashMap<String, Integer>) SLAPI.load("warnings.bin");
 			mutedplrs = (HashMap<String, Integer>) SLAPI.load("mutedplrs.bin");
@@ -59,13 +59,22 @@ public class WarhubModChat extends JavaPlugin {
 			e.printStackTrace();
 		}
 		PluginManager pm = this.getServer().getPluginManager();
-		pm.registerEvents(playerListener, this);
+		pm.registerEvents(Listener, this);
 		DynmapAPI dynmap = (DynmapAPI)getServer().getPluginManager().getPlugin("dynmap");
 		if(dynmap == null || !((org.bukkit.plugin.Plugin)dynmap).isEnabled()) {
-			log.info("[WHChat] dynmap not loaded, disabling plugin.");
-			pm.disablePlugin(((org.bukkit.plugin.Plugin) (this)));
-			return;
+			log.info("[WHChat] dynmap not loaded, disabling message cancelling on dynmap");
+			DynmapManager.disable();
+		} else {
+			DynmapManager.enable(this);
 		}
+		getCommand("channel").setExecutor(new ChannelCommand(this));
+		getCommand("alert").setExecutor(new QuickMessageCommand(this));
+		getCommand("global").setExecutor(new QuickMessageCommand(this));
+		getCommand("modchat").setExecutor(new QuickMessageCommand(this));
+		getCommand("deaf").setExecutor(new DeafCommand(this));
+		getCommand("mute").setExecutor(new MuteCommand(this));
+		getCommand("me").setExecutor(new MeCommand(this));
+		getCommand("say").setExecutor(new SayCommand());
 
 		PluginDescriptionFile pdffile = this.getDescription();
 		version = pdffile.getVersion();
@@ -73,322 +82,6 @@ public class WarhubModChat extends JavaPlugin {
 				+ " by cmastudios enabled!");
 	}
 
-	@SuppressWarnings("static-access")
-	public boolean onCommand(CommandSender sender, Command cmd, String label,
-			String[] args) {
-		Player player = null;
-		if (sender instanceof Player) {
-			player = (Player) sender;
-		}
-		if (cmd.getName().equalsIgnoreCase("modchat")) {
-			if (!permissions.has(player, "warhub.moderator")) {
-				player.sendMessage(ChatColor.RED
-						+ "You don't have the permissions to do that!");
-				return true;
-			}
-			if (args.length < 1) {
-				if (player == null) {
-					log.info("You can't use channels from the console, use '/modchat <message>' to chat.");
-					return true;
-				}
-				channels.put(player, "mod");
-				player.sendMessage(ChatColor.YELLOW + "Chat switched to mod.");
-			} else {
-				String message = "";
-				for (String arg : args) {
-					message = message + arg + " ";
-				}
-				if (message.equals(""))
-					return false;
-				if (player == null) {
-					List<Player> sendto = new ArrayList<Player>();
-					for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-						if (permissions.has(p, "warhub.moderator")) {
-							sendto.add(p);
-						}
-					}
-					for (Player p : sendto) {
-						p.sendMessage(messageUtil.colorizeText(Config
-								.read("modchat-format")
-								.replace("%player", "tommytony")
-								.replace("%message", message)));
-					}
-					log.info("[MODCHAT] tommytony: " + message);
-					sendto.clear();
-					return true;
-				}
-				if (channels.containsKey(player)) {
-					String channel = channels.remove(player);
-					player.chat(message);
-					channels.put(player, channel);
-					channel = null;
-				} else {
-					channels.put(player, "mod");
-					player.chat(message);
-					channels.remove(player);
-				}
-
-			}
-			return true;
-		}
-		if (cmd.getName().equalsIgnoreCase("alert")) {
-			if (player == null) {
-				log.info("You can't use alert from the console, use '/say <message>' to chat.");
-				return true;
-			}
-			if (!permissions.has(player, "warhub.moderator")) {
-				player.sendMessage(ChatColor.RED
-						+ "You don't have the permissions to do that!");
-				return true;
-			}
-			if (args.length < 1) {
-				channels.put(player, "alert");
-				player.sendMessage(ChatColor.YELLOW + "Chat switched to alert.");
-			} else {
-				String message = "";
-				for (String arg : args) {
-					message = message + arg + " ";
-				}
-				if (message.equals(""))
-					return false;
-				if (channels.containsKey(player)) {
-					String channel = channels.remove(player);
-					player.chat(message);
-					channels.put(player, channel);
-					channel = null;
-				} else {
-					channels.put(player, "alert");
-					player.chat(message);
-					channels.remove(player);
-				}
-
-			}
-			return true;
-		}
-		if (cmd.getName().equalsIgnoreCase("global")) {
-			if (player == null) {
-				log.info("You can't use global from the console, use '/say <message>' to chat.");
-				return true;
-			}
-			if (args.length < 1) {
-				channels.remove(player);
-				player.sendMessage(ChatColor.YELLOW
-						+ "Chat switched to global.");
-			} else {
-				String message = "";
-				for (String arg : args) {
-					message = message + arg + " ";
-				}
-				if (message.equals(""))
-					return false;
-				if (channels.containsKey(player)) {
-					String channel = channels.remove(player);
-					player.chat(message);
-					channels.put(player, channel);
-					channel = null;
-				} else {
-					player.chat(message);
-				}
-
-			}
-			return true;
-		}
-		if (cmd.getName().equalsIgnoreCase("channel")) {
-			if (player == null) {
-				log.info("You can't use channels from the console, use '/<say/modchat> <message>' to chat.");
-				return true;
-			}
-			if (args.length < 1) {
-				if (!permissions.has(player, "warhub.moderator")) {
-					player.sendMessage(ChatColor.RED
-							+ "You're not a mod, and cannot change channels.");
-					return true;
-				} else {
-					player.sendMessage(ChatColor.RED
-							+ "Use '/ch <mod/alert/global>' to change your channel.");
-				}
-				return true;
-			}
-			if (args[0].equalsIgnoreCase("mod")
-					|| args[0].equalsIgnoreCase("modchat")
-					|| args[0].equalsIgnoreCase("m")) {
-				if (!permissions.has(player, "warhub.moderator")) {
-					player.sendMessage(ChatColor.RED
-							+ "You don't have the permissions to do that!");
-					return true;
-				}
-				channels.put(player, "mod");
-				player.sendMessage(ChatColor.YELLOW + "Chat switched to mod.");
-				return true;
-			}
-			if (args[0].equalsIgnoreCase("a")
-					|| args[0].equalsIgnoreCase("alert")) {
-				if (!permissions.has(player, "warhub.moderator")) {
-					player.sendMessage(ChatColor.RED
-							+ "You don't have the permissions to do that!");
-					return true;
-				}
-				channels.put(player, "alert");
-				player.sendMessage(ChatColor.YELLOW + "Chat switched to alert.");
-				return true;
-			}
-			if (args[0].equalsIgnoreCase("g")
-					|| args[0].equalsIgnoreCase("global")) {
-				channels.remove(player);
-				player.sendMessage(ChatColor.YELLOW
-						+ "Chat switched to global.");
-				return true;
-			}
-			if (!permissions.has(player, "warhub.moderator")) {
-				player.sendMessage(ChatColor.RED
-						+ "You're not a mod, and cannot change channels.");
-				return true;
-			} else {
-				player.sendMessage(ChatColor.RED
-						+ "Use '/ch <mod/alert/global>' to change your channel.");
-			}
-			return true;
-		}
-		if (cmd.getName().equalsIgnoreCase("say")) {
-			if (player != null)
-				if (!player.isOp()) {
-					player.sendMessage(ChatColor.RED
-							+ "You don't have the permissions to do that!");
-					return true;
-				}
-			if (args.length == 0)
-				return false;
-			String message = "";
-			for (String arg : args) {
-				message = message + arg + " ";
-			}
-			if (message.equals(""))
-				return false;
-			this.getServer().broadcastMessage(
-					messageUtil.colorizeText(Config.read("say-format"))
-							.replace("%message", message));
-			return true;
-		}
-		if (cmd.getName().equalsIgnoreCase("deaf")) {
-			if (args.length < 1) {
-				player.sendMessage(ChatColor.YELLOW + "Deafened players:");
-				String plrs = "";
-				for (Player plr : ignores.keySet()) {
-					plrs += plr.getDisplayName() + ", ";
-				}
-				player.sendMessage(ChatColor.YELLOW + plrs);
-				player.sendMessage(ChatColor.YELLOW
-						+ "Use /deaf <player> to deafen someone.");
-				return true;
-			} else if (args.length == 1) {
-				Player todeafen = PlayerInfo.toPlayer(args[0]);
-				if (todeafen == player) {
-					if (ignores.containsKey(player)) {
-						ignores.remove(player);
-						todeafen.sendMessage(ChatColor.YELLOW
-								+ "You have been undeafened.");
-					} else {
-						ignores.put(player, "");
-						todeafen.sendMessage(ChatColor.YELLOW
-								+ "You have been deafened.");
-					}
-				} else if (player.hasPermission("warhub.moderator")) {
-					if (ignores.containsKey(todeafen)) {
-						ignores.remove(todeafen);
-						player.sendMessage(ChatColor.YELLOW
-								+ todeafen.getName() + " has been undeafened.");
-						todeafen.sendMessage(ChatColor.YELLOW
-								+ "You have been undeafened.");
-					} else {
-						ignores.put(todeafen, "");
-						player.sendMessage(ChatColor.YELLOW
-								+ todeafen.getName() + " has been deafened.");
-						todeafen.sendMessage(ChatColor.YELLOW
-								+ "You have been deafened.");
-					}
-
-				} else {
-					player.sendMessage(ChatColor.RED
-							+ "You do not have permissions to deafen others.");
-				}
-				return true;
-			}
-			return false;
-		}
-		if (cmd.getName().equalsIgnoreCase("me")) {
-	    	if (mutedplrs.containsKey(player.getName())) {
-	    		player.sendMessage(ChatColor.RED + "You are muted.");
-	    		return true;
-	    	}
-			String message = "";
-			for (String arg : args) {
-				message = message + arg + " ";
-			}
-			if (message == "")
-				return false;
-			if (message == " ")
-				return false;
-			if (message.contains("\u00A7")
-					&& !player.hasPermission("warhub.moderator")) {
-				message = message.replaceAll("\u00A7[0-9a-fA-FkK]", "");
-			}
-
-			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-				if (!ignores.containsKey(p))
-					p.sendMessage("* " + ChatColor.WHITE
-							+ player.getDisplayName() + ChatColor.WHITE + " "
-							+ message);
-			}
-			return true;
-		}
-		if (cmd.getName().equalsIgnoreCase("mute")) {
-			if (args.length < 1) {
-				player.sendMessage(ChatColor.YELLOW + "Muted players:");
-				String plrs = "";
-				for (String plr : mutedplrs.keySet()) {
-					plrs += plr + ", ";
-				}
-				player.sendMessage(ChatColor.YELLOW + plrs);
-				player.sendMessage(ChatColor.YELLOW
-						+ "Use /mute <player> to mute someone.");
-				return true;
-			} else if (args.length == 1) {
-				Player todeafen = PlayerInfo.toPlayer(args[0]);
-				if (todeafen == player && player.hasPermission("warhub.moderator")) {
-					if (mutedplrs.containsKey(player.getName())) {
-						mutedplrs.remove(player.getName());
-						todeafen.sendMessage(ChatColor.YELLOW
-								+ "You have been unmuted.");
-					} else {
-						mutedplrs.put(player.getName(), 1);
-						todeafen.sendMessage(ChatColor.YELLOW
-								+ "You have been muted.");
-					}
-				} else if (player.hasPermission("warhub.moderator")) {
-					if (mutedplrs.containsKey(todeafen.getName())) {
-						mutedplrs.remove(todeafen.getName());
-						player.sendMessage(ChatColor.YELLOW
-								+ todeafen.getName() + " has been unmuted.");
-						todeafen.sendMessage(ChatColor.YELLOW
-								+ "You have been unmuted.");
-					} else {
-						mutedplrs.put(todeafen.getName(), 1);
-						player.sendMessage(ChatColor.YELLOW
-								+ todeafen.getName() + " has been muted.");
-						todeafen.sendMessage(ChatColor.YELLOW
-								+ "You have been muted.");
-					}
-
-				} else {
-					player.sendMessage(ChatColor.RED
-							+ "You do not have permissions to mute players.");
-				}
-				return true;
-			}
-			return false;
-		}
-		return false;
-	}
 
 	public int parseTimeString(String time) {
 		if (!time.matches("[0-9]*h?[0-9]*m?"))

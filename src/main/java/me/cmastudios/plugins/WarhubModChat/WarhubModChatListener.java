@@ -3,6 +3,7 @@ package me.cmastudios.plugins.WarhubModChat;
 import java.util.ArrayList;
 import java.util.List;
 import me.cmastudios.plugins.WarhubModChat.util.Config;
+import me.cmastudios.plugins.WarhubModChat.util.Message;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,17 +13,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.dynmap.DynmapCommonAPI;
 
-public class plrLstnr implements Listener {
+public class WarhubModChatListener implements Listener {
 	public static WarhubModChat plugin;
-    public plrLstnr(WarhubModChat instance) {
+    public WarhubModChatListener(WarhubModChat instance) {
         plugin = instance;
     }
     @EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat (final PlayerChatEvent event) {
-    	DynmapCommonAPI dynmap = (DynmapCommonAPI)plugin.getServer().getPluginManager().getPlugin("dynmap");
-
     	Player player = event.getPlayer();
     	if (plugin.mutedplrs.containsKey(player.getName())) {
     		event.setCancelled(true);
@@ -48,19 +46,19 @@ public class plrLstnr implements Listener {
     		event.setMessage(event.getMessage().replaceAll("\u00A7[0-9a-fA-FkK]", ""));
     	}
     	if (plugin.channels.containsKey(event.getPlayer())) {
-			dynmap.setDisableChatToWebProcessing(true);
+    		if (DynmapManager.getDynmapCommonAPI() != null) DynmapManager.getDynmapCommonAPI().setDisableChatToWebProcessing(true);
     		if (plugin.channels.get(event.getPlayer()).equalsIgnoreCase("mod")) {
     			event.setCancelled(true);
-    			sendToMods(plugin.messageUtil.colorizeText(Config.read("modchat-format")).replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
+    			sendToMods(Message.colorizeText(Config.config.getString("modchat-format")).replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
     			plugin.log.info("[MODCHAT] "+event.getPlayer().getDisplayName()+": "+event.getMessage());
     		}
     		if (plugin.channels.get(event.getPlayer()).equalsIgnoreCase("alert")) {
     			event.setCancelled(true);
-    			Bukkit.getServer().broadcastMessage(plugin.messageUtil.colorizeText(Config.read("alert-format")).replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
-    			dynmap.sendBroadcastToWeb("Attention", event.getMessage());
+    			Bukkit.getServer().broadcastMessage(Message.colorizeText(Config.config.getString("alert-format")).replace("%player", event.getPlayer().getDisplayName()).replace("%message", event.getMessage()));
+    			if (DynmapManager.getDynmapCommonAPI() != null) DynmapManager.getDynmapCommonAPI().sendBroadcastToWeb("Attention", event.getMessage());
     		}
     	} else {
-			dynmap.setDisableChatToWebProcessing(false);
+    		if (DynmapManager.getDynmapCommonAPI() != null) DynmapManager.getDynmapCommonAPI().setDisableChatToWebProcessing(false);
     	}
     	
     }

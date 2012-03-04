@@ -18,7 +18,7 @@ public class Message {
 	      }
 		System.out.println(message.replace("¤a", "").replace("¤b", "").replace("¤c", "").replace("¤d", "").replace("¤e", "").replace("¤f", "").replace("¤1", "").replace("¤2", "").replace("¤3", "").replace("¤4", "").replace("¤5", "").replace("¤6", "").replace("¤7", "").replace("¤8", "").replace("¤9", "").replace("¤0", ""));
 	}
-	public String colorizeText(String string) {
+	public static String colorizeText(String string) {
 	    string = string.replaceAll("&0", ChatColor.BLACK+"");
 	    string = string.replaceAll("&1", ChatColor.DARK_BLUE+"");
 	    string = string.replaceAll("&2", ChatColor.DARK_GREEN+"");
@@ -38,7 +38,7 @@ public class Message {
 	    return string;
 	}
 	public String parseColor(String string) {
-		return this.colorizeText(string);
+		return Message.colorizeText(string);
 	}
 
 }

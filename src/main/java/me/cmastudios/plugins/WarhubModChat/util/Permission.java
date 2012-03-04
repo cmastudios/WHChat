@@ -1,6 +1,6 @@
 package me.cmastudios.plugins.WarhubModChat.util;
 
-import java.util.logging.Logger;
+/*import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -10,9 +10,9 @@ import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
 import me.cmastudios.plugins.WarhubModChat.*;
-
+*/
 public class Permission {
-	Logger log = Logger.getLogger("Minecraft");
+	/*Logger log = Logger.getLogger("Minecraft");
     public static PermissionHandler permissionHandler;
     private static boolean UsePermissions;
     public WarhubModChat plugin;
@@ -41,6 +41,6 @@ public class Permission {
 	    permissionHandler = ((Permissions) permissionsPlugin).getHandler();
 	    log.info("[WarhubModChat] Permissions ready using "+((Permissions)permissionsPlugin).getDescription().getFullName());
 	    UsePermissions = true;
-	}
+	}*/
 
 }
