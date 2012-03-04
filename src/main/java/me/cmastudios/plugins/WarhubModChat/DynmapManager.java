@@ -11,6 +11,7 @@ public class DynmapManager {
 	}
 	public static void enable(WarhubModChat instance) {
 		plugin = instance;
+		enabled = true;
 	}
 	public static DynmapAPI getDynmapAPI() {
 		if (!enabled) return null;

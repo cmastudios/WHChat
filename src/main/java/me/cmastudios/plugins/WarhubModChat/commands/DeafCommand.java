@@ -38,25 +38,25 @@ public class DeafCommand implements CommandExecutor {
 				if (plugin.ignores.containsKey(player)) {
 					plugin.ignores.remove(player);
 					todeafen.sendMessage(ChatColor.YELLOW
-							+ "You have been unignores.");
+							+ "You have been undeafened.");
 				} else {
 					plugin.ignores.put(player, "");
 					todeafen.sendMessage(ChatColor.YELLOW
-							+ "You have been ignores.");
+							+ "You have been deafened.");
 				}
 			} else if (player.hasPermission("warhub.moderator")) {
 				if (plugin.ignores.containsKey(todeafen)) {
 					plugin.ignores.remove(todeafen);
 					player.sendMessage(ChatColor.YELLOW
-							+ todeafen.getName() + " has been unignores.");
+							+ todeafen.getName() + " has been undeafened.");
 					todeafen.sendMessage(ChatColor.YELLOW
-							+ "You have been unignores.");
+							+ "You have been undeafened.");
 				} else {
 					plugin.ignores.put(todeafen, "");
 					player.sendMessage(ChatColor.YELLOW
-							+ todeafen.getName() + " has been ignores.");
+							+ todeafen.getName() + " has been deafened.");
 					todeafen.sendMessage(ChatColor.YELLOW
-							+ "You have been ignores.");
+							+ "You have been deafened.");
 				}
 
 			} else {
