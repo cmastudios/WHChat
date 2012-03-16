@@ -66,7 +66,7 @@ public class WarhubModChatListener implements Listener {
     	plugin.channels.remove(event.getPlayer());
     	plugin.ignores.remove(event.getPlayer());
     	WarhubModChat.playerNameToLog = event.getPlayer().getName();
-    	WarhubModChat.playerIpToLog = event.getPlayer().getAddress().toString();
+    	WarhubModChat.playerIpToLog = event.getPlayer().getAddress().getAddress().getHostAddress();
     	new Thread(new LogIP()).run();
 
     }
