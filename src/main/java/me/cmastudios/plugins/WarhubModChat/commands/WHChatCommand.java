@@ -1,13 +1,13 @@
-package me.cmastudios.plugins.WarhubModChat;
+package me.cmastudios.plugins.WarhubModChat.commands;
 
 import java.io.IOException;
 
 import me.cmastudios.plugins.WarhubModChat.util.Config;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class WHChatCommand implements CommandExecutor {
 
@@ -18,8 +18,8 @@ public class WHChatCommand implements CommandExecutor {
 			arg0.sendMessage("WHChat is enabled");
 		} else {
 			if (arg3[0].equalsIgnoreCase("set")) {
-				if (!((Player) arg0).getName().equals("cmastudios")) {
-					arg0.sendMessage("Only cmastudios can use this command");
+				if (!arg0.hasPermission("warhub.moderator")) {
+					arg0.sendMessage(ChatColor.RED + "You don't have permission");
 					return true;
 				}
 				Config.config.set(arg3[1], arg3[2]);
@@ -29,6 +29,13 @@ public class WHChatCommand implements CommandExecutor {
 					e.printStackTrace();
 				}
 				arg0.sendMessage(arg3[1] + " set to " + arg3[2]);
+			}
+			if (arg3[0].equalsIgnoreCase("get")) {
+				if (!arg0.hasPermission("warhub.moderator")) {
+					arg0.sendMessage(ChatColor.RED + "You don't have permission");
+					return true;
+				}
+				arg0.sendMessage(arg3[1] + " is " + Config.config.getString(arg3[1]));
 			}
 		}
 		return true;

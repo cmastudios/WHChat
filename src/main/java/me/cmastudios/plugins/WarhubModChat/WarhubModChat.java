@@ -15,6 +15,7 @@ import me.cmastudios.plugins.WarhubModChat.commands.MeCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.MuteCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.QuickMessageCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.SayCommand;
+import me.cmastudios.plugins.WarhubModChat.commands.WHChatCommand;
 import me.cmastudios.plugins.WarhubModChat.util.*;
 import me.cmastudios.plugins.WarhubModChat.SLAPI;
 
