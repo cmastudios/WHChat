@@ -37,3 +37,6 @@ commands:
         description: List muted players or mute a player
         usage: /<command> (player)
         aliases: [muted, unmute, mutedplayers]
+    whchat:
+        description: Change WHChat settings
+        usage: secret
