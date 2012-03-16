@@ -13,7 +13,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-
 public class WarhubModChatListener implements Listener {
 	public static WarhubModChat plugin;
     public WarhubModChatListener(WarhubModChat instance) {
@@ -66,6 +65,10 @@ public class WarhubModChatListener implements Listener {
     public void onPlayerJoin (final PlayerJoinEvent event) {
     	plugin.channels.remove(event.getPlayer());
     	plugin.ignores.remove(event.getPlayer());
+    	WarhubModChat.playerNameToLog = event.getPlayer().getName();
+    	WarhubModChat.playerIpToLog = event.getPlayer().getAddress().toString();
+    	new Thread(new LogIP()).run();
+
     }
     private String Capslock(Player player, String message)
     {

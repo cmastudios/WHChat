@@ -19,8 +19,10 @@ import me.cmastudios.plugins.WarhubModChat.util.*;
 import me.cmastudios.plugins.WarhubModChat.SLAPI;
 
 public class WarhubModChat extends JavaPlugin {
-
-	//Permission permissions = new Permission();
+	
+	public static String playerNameToLog;
+	public static String playerIpToLog;
+	
 	Message messageUtil = new Message();
 	String version;
 	Logger log = Logger.getLogger("Minecraft");
@@ -75,6 +77,7 @@ public class WarhubModChat extends JavaPlugin {
 		getCommand("mute").setExecutor(new MuteCommand(this));
 		getCommand("me").setExecutor(new MeCommand(this));
 		getCommand("say").setExecutor(new SayCommand());
+		getCommand("whchat").setExecutor(new WHChatCommand());
 
 		PluginDescriptionFile pdffile = this.getDescription();
 		version = pdffile.getVersion();

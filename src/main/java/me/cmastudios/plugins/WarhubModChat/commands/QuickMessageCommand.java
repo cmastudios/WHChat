@@ -19,7 +19,6 @@ public class QuickMessageCommand implements CommandExecutor {
     public QuickMessageCommand(WarhubModChat instance) {
         plugin = instance;
     }
-	@SuppressWarnings("unused")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String arg2,
 			String[] args) {
