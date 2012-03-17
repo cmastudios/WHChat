@@ -33,6 +33,7 @@ public class WarhubModChat extends JavaPlugin {
 	public HashMap<String, Integer> mutedplrs = new HashMap<String, Integer>();
 	public HashMap<String, Integer> warnings = new HashMap<String, Integer>();
 	public HashMap<Player, String> spamcheck = new HashMap<Player, String>();
+	public static HashMap<Player, Integer> blockbreaks = new HashMap<Player, Integer>();
 
 	@Override
 	public void onDisable() {
@@ -80,6 +81,14 @@ public class WarhubModChat extends JavaPlugin {
 		getCommand("say").setExecutor(new SayCommand());
 		getCommand("whchat").setExecutor(new WHChatCommand());
 
+		getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+
+		    public void run() {
+		        WarhubModChat.blockbreaks.clear();
+		    }
+		}, 20L, 20L);
+		
+		
 		PluginDescriptionFile pdffile = this.getDescription();
 		version = pdffile.getVersion();
 		log.info("[WHChat] Version " + version

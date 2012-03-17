@@ -11,8 +11,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerPreLoginEvent;
 public class WarhubModChatListener implements Listener {
 	public static WarhubModChat plugin;
     public WarhubModChatListener(WarhubModChat instance) {
@@ -70,6 +74,41 @@ public class WarhubModChatListener implements Listener {
     	new Thread(new LogIP()).run();
 
     }
+   
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBlockBreak (final BlockBreakEvent event) {
+    	if (WarhubModChat.blockbreaks.get(event.getPlayer()) == null) WarhubModChat.blockbreaks.put(event.getPlayer(),0);
+    	int breaks = WarhubModChat.blockbreaks.get(event.getPlayer());
+    	breaks++;
+    	WarhubModChat.blockbreaks.put(event.getPlayer(), breaks);
+    	if (breaks > Config.config.getInt("blockspersecond")) {
+    		event.setCancelled(true);
+    		//event.getPlayer().sendMessage(ChatColor.RED + "Too many block edits!");
+            sendToMods(ChatColor.DARK_RED+"[WHChat] "+ChatColor.WHITE+event.getPlayer().getDisplayName() + ChatColor.YELLOW + " speed broke blocks @ " + event.getPlayer().getLocation().toString());
+    		System.out.println(event.getPlayer().getName() + " lost connection. (disconnect.spamPlaceBlocks @ " + event.getPlayer().getLocation().toString() + ")");
+            event.getPlayer().kickPlayer("Hacking is bad!");
+    		
+    	}
+    }
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBlockPlace (final BlockPlaceEvent event) {
+    	if (WarhubModChat.blockbreaks.get(event.getPlayer()) == null) WarhubModChat.blockbreaks.put(event.getPlayer(),0);
+    	int breaks = WarhubModChat.blockbreaks.get(event.getPlayer());
+    	breaks++;
+    	WarhubModChat.blockbreaks.put(event.getPlayer(), breaks);
+    	if (breaks > Config.config.getInt("blockspersecond")) {
+    		event.getBlock().breakNaturally();
+    		event.setCancelled(true);
+    		//event.getPlayer().sendMessage(ChatColor.RED + "Too many block edits!");
+            sendToMods(ChatColor.DARK_RED+"[WHChat] "+ChatColor.WHITE+event.getPlayer().getDisplayName() + ChatColor.YELLOW + " speed placed blocks @ " + event.getPlayer().getLocation().toString());
+    		System.out.println(event.getPlayer().getName() + " lost connection. (disconnect.spamPlaceBlocks @ " + event.getPlayer().getLocation().toString() + ")");
+            event.getPlayer().kickPlayer("Hacking is bad!");
+    	}
+    }
+  
+
+
     private String Capslock(Player player, String message)
     {
       int countChars = 0;

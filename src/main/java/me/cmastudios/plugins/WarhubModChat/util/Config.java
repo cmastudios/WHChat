@@ -20,6 +20,7 @@ public class Config {
 		if (config.get("mysql.username")==null)config.set("mysql.username", "warhub");
 		if (config.get("mysql.password")==null)config.set("mysql.password", "invalid");
 		if (config.get("mysql.database")==null)config.set("mysql.database", "warhub");
+		if (config.get("blockspersecond")==null)config.set("blockspersecond", 10);
 		try {
 			config.save(file);
 		} catch (IOException e) {
