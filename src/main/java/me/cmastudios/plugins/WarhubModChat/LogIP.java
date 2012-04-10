@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import me.cmastudios.plugins.WarhubModChat.util.Config;
 
 public class LogIP implements Runnable {
-	public static CopyOnWriteArrayList<String> loggedPlayers = new CopyOnWriteArrayList<String>;
+	public static CopyOnWriteArrayList<String> loggedPlayers = new CopyOnWriteArrayList<String>();
 
 	@Override
 	public void run() {
