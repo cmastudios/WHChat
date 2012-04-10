@@ -85,7 +85,7 @@ public class WarhubModChatListener implements Listener {
     	if (breaks > Config.config.getInt("blockspersecond")) {
     		event.setCancelled(true);
     		//event.getPlayer().sendMessage(ChatColor.RED + "Too many block edits!");
-            sendToMods(ChatColor.DARK_RED+"[WHChat] "+ChatColor.WHITE+event.getPlayer().getDisplayName() + ChatColor.YELLOW + " speed broke blocks @ " + event.getPlayer().getLocation().toString());
+            sendToMods(ChatColor.DARK_RED+"[WHChat] "+ChatColor.WHITE+event.getPlayer().getDisplayName() + ChatColor.YELLOW + " speed broke blocks.");
     		System.out.println(event.getPlayer().getName() + " lost connection. (disconnect.spamPlaceBlocks @ " + event.getPlayer().getLocation().toString() + ")");
             event.getPlayer().kickPlayer("Hacking is bad!");
     		
@@ -101,7 +101,7 @@ public class WarhubModChatListener implements Listener {
     		event.getBlock().breakNaturally();
     		event.setCancelled(true);
     		//event.getPlayer().sendMessage(ChatColor.RED + "Too many block edits!");
-            sendToMods(ChatColor.DARK_RED+"[WHChat] "+ChatColor.WHITE+event.getPlayer().getDisplayName() + ChatColor.YELLOW + " speed placed blocks @ " + event.getPlayer().getLocation().toString());
+            sendToMods(ChatColor.DARK_RED+"[WHChat] "+ChatColor.WHITE+event.getPlayer().getDisplayName() + ChatColor.YELLOW + " speed placed blocks.");
     		System.out.println(event.getPlayer().getName() + " lost connection. (disconnect.spamPlaceBlocks @ " + event.getPlayer().getLocation().toString() + ")");
             event.getPlayer().kickPlayer("Hacking is bad!");
     	}
