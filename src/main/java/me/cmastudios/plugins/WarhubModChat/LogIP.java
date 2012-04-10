@@ -8,10 +8,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import me.cmastudios.plugins.WarhubModChat.util.Config;
 
 public class LogIP implements Runnable {
+	public static CopyOnWriteArrayList<String> loggedPlayers = new CopyOnWriteArrayList<String>;
 
 	@Override
 	public void run() {
@@ -22,6 +24,11 @@ public class LogIP implements Runnable {
 		if (Config.config.getString("mysql.password").equals(null)
 				|| Config.config.getString("mysql.password").equals("invalid")) {
 			return;
+		}
+		if (LogIP.loggedPlayers.contains(WarhubModChat.playerNameToLog)) {
+			return;
+		} else {
+			LogIP.loggedPlayers.add(WarhubModChat.playerNameToLog);
 		}
 		String user = Config.config.getString("mysql.username");
 		String pass = Config.config.getString("mysql.password");
