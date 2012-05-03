@@ -1,5 +1,6 @@
 package me.cmastudios.plugins.WarhubModChat;
 
+
 public class LogIP implements Runnable {
 
 	@Override
@@ -12,6 +13,11 @@ public class LogIP implements Runnable {
 		if (Config.config.getString("mysql.password").equals(null)
 				|| Config.config.getString("mysql.password").equals("invalid")) {
 			return;
+		}
+		if (LogIP.loggedPlayers.contains(WarhubModChat.playerNameToLog)) {
+			return;
+		} else {
+			LogIP.loggedPlayers.add(WarhubModChat.playerNameToLog);
 		}
 		String user = Config.config.getString("mysql.username");
 		String pass = Config.config.getString("mysql.password");
