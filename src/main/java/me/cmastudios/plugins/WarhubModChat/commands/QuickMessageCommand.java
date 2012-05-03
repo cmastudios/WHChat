@@ -27,8 +27,8 @@ public class QuickMessageCommand implements CommandExecutor {
 			player = (Player) sender;
 		}
 		if (cmd.getName().equalsIgnoreCase("modchat")) {
-			if (!player.hasPermission("warhub.moderator")) {
-				player.sendMessage(ChatColor.RED
+			if (!sender.hasPermission("warhub.moderator")) {
+				sender.sendMessage(ChatColor.RED
 						+ "You don't have the permissions to do that!");
 				return true;
 			}

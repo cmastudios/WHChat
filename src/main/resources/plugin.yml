@@ -40,3 +40,7 @@ commands:
     whchat:
         description: Change WHChat settings
         usage: secret
+    rawmsg:
+        description: Send a raw message
+        usage: /<command> <message>
+        permission: message.raw

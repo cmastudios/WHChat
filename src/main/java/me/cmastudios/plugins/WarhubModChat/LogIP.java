@@ -1,20 +1,10 @@
 package me.cmastudios.plugins.WarhubModChat;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.logging.Logger;
-
-import me.cmastudios.plugins.WarhubModChat.util.Config;
-
 public class LogIP implements Runnable {
 
 	@Override
 	public void run() {
+		/*
 		if (WarhubModChat.playerNameToLog == null)
 			return;
 		if (WarhubModChat.playerIpToLog == null)
@@ -48,7 +38,7 @@ public class LogIP implements Runnable {
 			e.printStackTrace();
 			Logger.getLogger("Minecraft").severe("[WHChat] Cannot add IP to database! " + e);
 		}
-
+*/
 	}
 
 }

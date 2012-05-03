@@ -14,6 +14,7 @@ import me.cmastudios.plugins.WarhubModChat.commands.DeafCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.MeCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.MuteCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.QuickMessageCommand;
+import me.cmastudios.plugins.WarhubModChat.commands.RawMsgCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.SayCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.WHChatCommand;
 import me.cmastudios.plugins.WarhubModChat.util.*;
@@ -21,8 +22,6 @@ import me.cmastudios.plugins.WarhubModChat.SLAPI;
 
 public class WarhubModChat extends JavaPlugin {
 	
-	public static String playerNameToLog;
-	public static String playerIpToLog;
 	
 	Message messageUtil = new Message();
 	String version;
@@ -32,11 +31,12 @@ public class WarhubModChat extends JavaPlugin {
 	public HashMap<Player, String> ignores = new HashMap<Player, String>();
 	public HashMap<String, Integer> mutedplrs = new HashMap<String, Integer>();
 	public HashMap<String, Integer> warnings = new HashMap<String, Integer>();
-	public HashMap<Player, String> spamcheck = new HashMap<Player, String>();
 	public static HashMap<Player, Integer> blockbreaks = new HashMap<Player, Integer>();
 
 	@Override
 	public void onDisable() {
+		Listener.nukerEnabled = false;
+		blockbreaks.clear();
 		channels.clear();
 		try {
 			SLAPI.save(warnings, "warnings.bin");
@@ -80,6 +80,7 @@ public class WarhubModChat extends JavaPlugin {
 		getCommand("me").setExecutor(new MeCommand(this));
 		getCommand("say").setExecutor(new SayCommand());
 		getCommand("whchat").setExecutor(new WHChatCommand());
+		getCommand("rawmsg").setExecutor(new RawMsgCommand());
 
 		getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 
@@ -87,6 +88,15 @@ public class WarhubModChat extends JavaPlugin {
 		        WarhubModChat.blockbreaks.clear();
 		    }
 		}, 20L, 20L);
+		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+
+			@Override
+			public void run() {
+				Listener.nukerEnabled = true;
+				blockbreaks.clear();				
+			}
+			
+		}, 20L);
 		
 		
 		PluginDescriptionFile pdffile = this.getDescription();
