@@ -16,7 +16,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class WarhubModChatListener implements Listener {
 	public boolean nukerEnabled = false;
@@ -143,57 +142,33 @@ public class WarhubModChatListener implements Listener {
 		 */
 		if (command.startsWith("/toggledownfall")) {
 			event.setCancelled(true);
-			if (!event.getPlayer().hasPermission("essentials.weather")) {
-				event.getPlayer().sendMessage(
-						ChatColor.RED + "You don't have permission.");
-				return;
-			}
 			if (event.getPlayer().getWorld().hasStorm()) {
-				event.getPlayer().getWorld().setStorm(false);
+				plugin.getServer().dispatchCommand(event.getPlayer(), "/weather sun");
 			} else {
-				event.getPlayer().getWorld().setStorm(true);
+				plugin.getServer().dispatchCommand(event.getPlayer(), "/weather storm");
 			}
 		}
 		if (command.startsWith("/time set")) {
 			event.setCancelled(true);
-			if (!event.getPlayer().hasPermission("essentials.time.set")) {
-				event.getPlayer().sendMessage(
-						ChatColor.RED + "You don't have permission.");
-				return;
-			}
 			int ticks;
 			try {
 				ticks = Integer.parseInt(command.split(" ")[2]);
-				event.getPlayer().getWorld().setTime(ticks);
+				plugin.getServer().dispatchCommand(event.getPlayer(), "/time " + ticks + "ticks");
 			} catch (Exception e) {
-				event.getPlayer().sendMessage(e.toString());
+				event.getPlayer().sendMessage(ChatColor.RED + "/time set <ticks>");
 			}
 		}
 		if (command.startsWith("/give")) {
-
 			if (event.getPlayer().hasPermission("essentials.give"))
 				return;
 			event.setCancelled(true);
-			if (!event.getPlayer().hasPermission("essentials.item")) {
-				event.getPlayer().sendMessage(
-						ChatColor.RED + "You don't have permission.");
-				return;
-			}
 			try {
-				Player player = Bukkit.getPlayer(command.split(" ")[1]);
 				int item = Integer.parseInt(command.split(" ")[2]);
 				int amount = Integer.parseInt(command.split(" ")[3]);
 				short data = Short.parseShort(command.split(" ")[4]);
-				if (event.getPlayer() != player) {
-					event.getPlayer().sendMessage(
-							ChatColor.RED
-									+ "You may only give items to yourself");
-					return;
-				}
-				event.getPlayer().getInventory()
-						.addItem(new ItemStack(item, amount, data));
+				plugin.getServer().dispatchCommand(event.getPlayer(), "/i " + item + ":" + data + " " + amount);
 			} catch (Exception e) {
-				event.getPlayer().sendMessage(e.toString());
+				event.getPlayer().sendMessage(ChatColor.RED + "/give <player> <id> <amount> <data>");
 			}
 
 		}
