@@ -154,19 +154,20 @@ public class WarhubModChatListener implements Listener {
 					message = message.toLowerCase();
 					plugin.warnings.put(player.getName(),
 							getWarnings(player) + 1);
-					if (getWarnings(player) % 10 == 0) {
-						plugin.getServer().dispatchCommand(
-								plugin.getServer().getConsoleSender(),
-								"kick " + player.getName()
-										+ " Do not type in caps!");
-					} else if (getWarnings(player) % 50 == 0) {
+					if (getWarnings(player) % 50 == 0) {
 						plugin.getServer().dispatchCommand(
 								plugin.getServer().getConsoleSender(),
 								"kick " + player.getName()
 										+ " Do not type in caps!");
 						plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
 								"tempban " + player.getName() + " 20m");
-					} else {
+					} else
+					if (getWarnings(player) % 5 == 0) {
+						plugin.getServer().dispatchCommand(
+								plugin.getServer().getConsoleSender(),
+								"kick " + player.getName()
+										+ " Do not type in caps!");
+					} else  {
 						player.sendMessage(ChatColor.YELLOW
 								+ "Do not type in all caps ["
 								+ getWarnings(player) + " Violations]");
