@@ -53,7 +53,6 @@ public class WarhubModChat extends JavaPlugin {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable() {
-		//permissions.setupPermissions();
 		Config.setup(getConfig());
 		try {
 			warnings = (HashMap<String, Integer>) SLAPI.load("warnings.bin");

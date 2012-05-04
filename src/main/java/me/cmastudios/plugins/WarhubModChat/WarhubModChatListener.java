@@ -108,9 +108,8 @@ public class WarhubModChatListener implements Listener {
 			WarhubModChat.blockbreaks.put(event.getPlayer(), breaks);
 			if (breaks > Config.config.getInt("blockspersecond")) {
 				event.setCancelled(true);
-				PlayerWrapper banner = new PlayerWrapper("[WHChat]");
 				plugin.getServer().dispatchCommand(
-						banner,
+						plugin.getServer().getConsoleSender(),
 						"kick " + event.getPlayer().getName()
 								+ " Do not use nuker hacks!");
 			}
@@ -128,9 +127,8 @@ public class WarhubModChatListener implements Listener {
 			if (breaks > Config.config.getInt("blockspersecond")) {
 				event.getBlock().breakNaturally();
 				event.setCancelled(true);
-				PlayerWrapper banner = new PlayerWrapper("[WHChat]");
 				plugin.getServer().dispatchCommand(
-						banner,
+						plugin.getServer().getConsoleSender(),
 						"kick " + event.getPlayer().getName()
 								+ " Do not use fastplace hacks!");
 			}
@@ -156,18 +154,17 @@ public class WarhubModChatListener implements Listener {
 					message = message.toLowerCase();
 					plugin.warnings.put(player.getName(),
 							getWarnings(player) + 1);
-					PlayerWrapper banner = new PlayerWrapper("[WHChat]");
 					if (getWarnings(player) % 10 == 0) {
 						plugin.getServer().dispatchCommand(
-								banner,
+								plugin.getServer().getConsoleSender(),
 								"kick " + player.getName()
 										+ " Do not type in caps!");
 					} else if (getWarnings(player) % 50 == 0) {
 						plugin.getServer().dispatchCommand(
-								banner,
+								plugin.getServer().getConsoleSender(),
 								"kick " + player.getName()
 										+ " Do not type in caps!");
-						plugin.getServer().dispatchCommand(banner,
+						plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
 								"tempban " + player.getName() + " 20m");
 					} else {
 						player.sendMessage(ChatColor.YELLOW
