@@ -143,9 +143,9 @@ public class WarhubModChatListener implements Listener {
 		if (command.startsWith("/toggledownfall")) {
 			event.setCancelled(true);
 			if (event.getPlayer().getWorld().hasStorm()) {
-				plugin.getServer().dispatchCommand(event.getPlayer(), "/weather sun");
+				plugin.getServer().dispatchCommand(event.getPlayer(), "weather sun");
 			} else {
-				plugin.getServer().dispatchCommand(event.getPlayer(), "/weather storm");
+				plugin.getServer().dispatchCommand(event.getPlayer(), "weather storm");
 			}
 		}
 		if (command.startsWith("/time set")) {
@@ -153,7 +153,7 @@ public class WarhubModChatListener implements Listener {
 			int ticks;
 			try {
 				ticks = Integer.parseInt(command.split(" ")[2]);
-				plugin.getServer().dispatchCommand(event.getPlayer(), "/time " + ticks + "ticks");
+				plugin.getServer().dispatchCommand(event.getPlayer(), "time " + ticks + "ticks");
 			} catch (Exception e) {
 				event.getPlayer().sendMessage(ChatColor.RED + "/time set <ticks>");
 			}
@@ -166,7 +166,7 @@ public class WarhubModChatListener implements Listener {
 				int item = Integer.parseInt(command.split(" ")[2]);
 				int amount = Integer.parseInt(command.split(" ")[3]);
 				short data = Short.parseShort(command.split(" ")[4]);
-				plugin.getServer().dispatchCommand(event.getPlayer(), "/i " + item + ":" + data + " " + amount);
+				plugin.getServer().dispatchCommand(event.getPlayer(), "i " + item + ":" + data + " " + amount);
 			} catch (Exception e) {
 				event.getPlayer().sendMessage(ChatColor.RED + "/give <player> <id> <amount> <data>");
 			}
