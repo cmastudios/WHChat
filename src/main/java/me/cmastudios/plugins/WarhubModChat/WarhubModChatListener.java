@@ -14,7 +14,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class WarhubModChatListener implements Listener {
 	public boolean nukerEnabled = false;
@@ -83,9 +85,6 @@ public class WarhubModChatListener implements Listener {
 		}
 
 	}
-    
-   
-    
 
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerJoin(final PlayerJoinEvent event) {
@@ -98,7 +97,7 @@ public class WarhubModChatListener implements Listener {
 
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler
 	public void onBlockBreak(final BlockBreakEvent event) {
 		if (nukerEnabled) {
 			if (WarhubModChat.blockbreaks.get(event.getPlayer()) == null)
@@ -116,7 +115,7 @@ public class WarhubModChatListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler
 	public void onBlockPlace(final BlockPlaceEvent event) {
 		if (nukerEnabled) {
 			if (WarhubModChat.blockbreaks.get(event.getPlayer()) == null)
@@ -133,6 +132,72 @@ public class WarhubModChatListener implements Listener {
 								+ " Do not use fastplace hacks!");
 			}
 		}
+	}
+
+	@EventHandler
+	public void onPlayerCommandPreprocess(
+			final PlayerCommandPreprocessEvent event) {
+		String command = event.getMessage();
+		/*
+		 * Allow use of TooManyItems features
+		 */
+		if (command.startsWith("/toggledownfall")) {
+			event.setCancelled(true);
+			if (!event.getPlayer().hasPermission("essentials.weather")) {
+				event.getPlayer().sendMessage(
+						ChatColor.RED + "You don't have permission.");
+				return;
+			}
+			if (event.getPlayer().getWorld().hasStorm()) {
+				event.getPlayer().getWorld().setStorm(false);
+			} else {
+				event.getPlayer().getWorld().setStorm(true);
+			}
+		}
+		if (command.startsWith("/time set")) {
+			event.setCancelled(true);
+			if (!event.getPlayer().hasPermission("essentials.time.set")) {
+				event.getPlayer().sendMessage(
+						ChatColor.RED + "You don't have permission.");
+				return;
+			}
+			int ticks;
+			try {
+				ticks = Integer.parseInt(command.split(" ")[2]);
+				event.getPlayer().getWorld().setTime(ticks);
+			} catch (Exception e) {
+				event.getPlayer().sendMessage(e.toString());
+			}
+		}
+		if (command.startsWith("/give")) {
+
+			if (event.getPlayer().hasPermission("essentials.give"))
+				return;
+			event.setCancelled(true);
+			if (!event.getPlayer().hasPermission("essentials.item")) {
+				event.getPlayer().sendMessage(
+						ChatColor.RED + "You don't have permission.");
+				return;
+			}
+			try {
+				String player = command.split(" ")[1];
+				int item = Integer.parseInt(command.split(" ")[2]);
+				int amount = Integer.parseInt(command.split(" ")[3]);
+				short data = Short.parseShort(command.split(" ")[4]);
+				if (event.getPlayer().getName() != player) {
+					event.getPlayer().sendMessage(
+							ChatColor.RED
+									+ "You may only give items to yourself");
+					return;
+				}
+				event.getPlayer().getInventory()
+						.addItem(new ItemStack(item, amount, data));
+			} catch (Exception e) {
+				event.getPlayer().sendMessage(e.toString());
+			}
+
+		}
+
 	}
 
 	private String Capslock(Player player, String message) {
@@ -159,15 +224,15 @@ public class WarhubModChatListener implements Listener {
 								plugin.getServer().getConsoleSender(),
 								"kick " + player.getName()
 										+ " Do not type in caps!");
-						plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(),
+						plugin.getServer().dispatchCommand(
+								plugin.getServer().getConsoleSender(),
 								"tempban " + player.getName() + " 20m");
-					} else
-					if (getWarnings(player) % 5 == 0) {
+					} else if (getWarnings(player) % 5 == 0) {
 						plugin.getServer().dispatchCommand(
 								plugin.getServer().getConsoleSender(),
 								"kick " + player.getName()
 										+ " Do not type in caps!");
-					} else  {
+					} else {
 						player.sendMessage(ChatColor.YELLOW
 								+ "Do not type in all caps ["
 								+ getWarnings(player) + " Violations]");

@@ -17,7 +17,7 @@ public class RawMsgCommand implements CommandExecutor {
 			msg.append(m).append(" ");
 		}
 		Bukkit.getServer().broadcastMessage(Message.colorizeText(msg.toString()));
-		return false;
+		return true;
 	}
 
 }
