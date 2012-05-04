@@ -181,10 +181,11 @@ public class WarhubModChatListener implements Listener {
 			}
 			try {
 				String player = command.split(" ")[1];
+				if (Config.config.getBoolean("debug")) System.out.println("'"+player+"'");
 				int item = Integer.parseInt(command.split(" ")[2]);
 				int amount = Integer.parseInt(command.split(" ")[3]);
 				short data = Short.parseShort(command.split(" ")[4]);
-				if (event.getPlayer().getName() != player) {
+				if (event.getPlayer().getName().toLowerCase() != player.toLowerCase()) {
 					event.getPlayer().sendMessage(
 							ChatColor.RED
 									+ "You may only give items to yourself");
