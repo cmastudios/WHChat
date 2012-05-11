@@ -1,6 +1,6 @@
 name: WHChat
 main: me.cmastudios.plugins.WarhubModChat.WarhubModChat
-version: 0.2.4(3/16/12)
+version: 0.2.5(5/11/12)
 author: cmastudios
 softdepend: [dynmap]
 description: |
