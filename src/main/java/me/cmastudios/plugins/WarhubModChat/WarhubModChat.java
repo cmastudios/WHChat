@@ -1,13 +1,10 @@
 package me.cmastudios.plugins.WarhubModChat;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
-
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.dynmap.DynmapAPI;
 
 import me.cmastudios.plugins.WarhubModChat.commands.ChannelCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.DeafCommand;
@@ -17,18 +14,25 @@ import me.cmastudios.plugins.WarhubModChat.commands.QuickMessageCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.RawMsgCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.SayCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.WHChatCommand;
-import me.cmastudios.plugins.WarhubModChat.util.*;
-import me.cmastudios.plugins.WarhubModChat.SLAPI;
+import me.cmastudios.plugins.WarhubModChat.util.Channel;
+import me.cmastudios.plugins.WarhubModChat.util.Config;
+import me.cmastudios.plugins.WarhubModChat.util.Message;
+
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.dynmap.DynmapAPI;
 
 public class WarhubModChat extends JavaPlugin {
 	
 	
 	Message messageUtil = new Message();
 	String version;
-	Logger log = Logger.getLogger("Minecraft");
+	Logger log = getLogger();
 	private final WarhubModChatListener Listener = new WarhubModChatListener(this);
-	public HashMap<Player, String> channels = new HashMap<Player, String>();
-	public HashMap<Player, String> ignores = new HashMap<Player, String>();
+	public HashMap<Player, Channel> channels = new HashMap<Player, Channel>();
+	public List<String> ignores = new ArrayList<String>();
 	public HashMap<String, Integer> mutedplrs = new HashMap<String, Integer>();
 	public HashMap<String, Integer> warnings = new HashMap<String, Integer>();
 	public static HashMap<Player, Integer> blockbreaks = new HashMap<Player, Integer>();
@@ -44,10 +48,10 @@ public class WarhubModChat extends JavaPlugin {
 			SLAPI.save(mutedplrs, "mutedplrs.bin");
 			mutedplrs.clear();
 		} catch (Exception e) {
-			log.severe("[WHChat] Failed to save data!");
+			log.severe("Failed to save data!");
 			e.printStackTrace();
 		}
-		log.info("[WHChat] Disabled!");
+		log.info("Disabled successfully.");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -57,15 +61,16 @@ public class WarhubModChat extends JavaPlugin {
 		try {
 			warnings = (HashMap<String, Integer>) SLAPI.load("warnings.bin");
 			mutedplrs = (HashMap<String, Integer>) SLAPI.load("mutedplrs.bin");
+		} catch (FileNotFoundException e) {
+			log.info("Creating data storage files..");
 		} catch (Exception e) {
-			log.severe("[WHChat] Failed to load data!");
-			e.printStackTrace();
+			log.severe("Error in loading data!");
 		}
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvents(Listener, this);
 		DynmapAPI dynmap = (DynmapAPI)getServer().getPluginManager().getPlugin("dynmap");
 		if(dynmap == null || !((org.bukkit.plugin.Plugin)dynmap).isEnabled()) {
-			log.info("[WHChat] dynmap not loaded, disabling message cancelling on dynmap");
+			log.info("Dynmap not found! Disabling dynmap integration.");
 			DynmapManager.disable();
 		} else {
 			DynmapManager.enable(this);
@@ -100,8 +105,8 @@ public class WarhubModChat extends JavaPlugin {
 		
 		PluginDescriptionFile pdffile = this.getDescription();
 		version = pdffile.getVersion();
-		log.info("[WHChat] Version " + version
-				+ " by cmastudios enabled!");
+		log.info("Version " + version
+				+ " has been enabled.");
 	}
 
 

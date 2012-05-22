@@ -2,11 +2,14 @@ package me.cmastudios.plugins.WarhubModChat;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.cmastudios.plugins.WarhubModChat.util.Channel;
 import me.cmastudios.plugins.WarhubModChat.util.Config;
 import me.cmastudios.plugins.WarhubModChat.util.Message;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,7 +18,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class WarhubModChatListener implements Listener {
 	public boolean nukerEnabled = false;
@@ -36,25 +39,28 @@ public class WarhubModChatListener implements Listener {
 		/*
 		 * Anti-spam removed due to bukkit built in anti spam
 		 */
+		// Anti caps
 		event.setMessage(Capslock(player, event.getMessage()));
-		ArrayList<Player> plrs = new ArrayList<Player>();
+		
+		// Don't send to deaf players
+		List<Player> plrs = new ArrayList<Player>();
 		for (Player plr : plugin.getServer().getOnlinePlayers()) {
-			if (plugin.ignores.containsKey(plr))
+			if (plugin.ignores.contains(plr.getName()))
 				plrs.add(plr);
 		}
 		for (Player plr : plrs) {
 			event.getRecipients().remove(plr);
 		}
-		if (event.getMessage().contains(ChatColor.COLOR_CHAR + "")
-				&& !player.hasPermission("warhub.moderator")) {
-			event.setMessage(event.getMessage().replaceAll(
-					ChatColor.COLOR_CHAR + "[0-9a-zA-Z]", ""));
-		}
+		/*
+		 * Anti color removed due to vanilla built in anti color
+		 */
 		if (plugin.channels.containsKey(event.getPlayer())) {
+			// Typing in !global channel
 			if (DynmapManager.getDynmapCommonAPI() != null)
 				DynmapManager.getDynmapCommonAPI()
 						.setDisableChatToWebProcessing(true);
-			if (plugin.channels.get(event.getPlayer()).equalsIgnoreCase("mod")) {
+			// Modchat processing
+			if (plugin.channels.get(event.getPlayer()) == Channel.MODCHAT) {
 				event.setCancelled(true);
 				sendToMods(Message
 						.colorizeText(Config.config.getString("modchat-format"))
@@ -64,8 +70,8 @@ public class WarhubModChatListener implements Listener {
 						+ event.getPlayer().getDisplayName() + ": "
 						+ event.getMessage());
 			}
-			if (plugin.channels.get(event.getPlayer())
-					.equalsIgnoreCase("alert")) {
+			// Alert processing
+			if (plugin.channels.get(event.getPlayer()) == Channel.ALERT) {
 				event.setCancelled(true);
 				Bukkit.getServer().broadcastMessage(
 						Message.colorizeText(
@@ -78,6 +84,7 @@ public class WarhubModChatListener implements Listener {
 							"Attention", event.getMessage());
 			}
 		} else {
+			// Typing in global channel
 			if (DynmapManager.getDynmapCommonAPI() != null)
 				DynmapManager.getDynmapCommonAPI()
 						.setDisableChatToWebProcessing(false);
@@ -85,8 +92,8 @@ public class WarhubModChatListener implements Listener {
 
 	}
 
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerJoin(final PlayerJoinEvent event) {
+	@EventHandler
+	public void onPlayerQuit(final PlayerQuitEvent event) {
 		plugin.channels.remove(event.getPlayer());
 		plugin.ignores.remove(event.getPlayer());
 		/*
@@ -172,10 +179,39 @@ public class WarhubModChatListener implements Listener {
 			}
 
 		}
+		/*
+		 * Action messages
+		 */
+		if (command.startsWith("/unban") && event.getPlayer().hasPermission("essentials.unban")) {
+			String[] args = command.split(" ");
+			if (args.length > 1) {
+				OfflinePlayer unbanned = Bukkit.getServer().getOfflinePlayer(args[1]);
+				if (unbanned != null) {
+					for (Player cannotify : Bukkit.getServer().getOnlinePlayers()) {
+						if (cannotify.hasPermission("warhub.notify")) {
+							cannotify.sendMessage(ChatColor.RED + "Player" + event.getPlayer().getName() + " has unbanned the player " + unbanned.getName());
+						}	
+					}
+				}
+			}
+		}
+		if ((command.startsWith("/jail") || command.startsWith("/unjail") || command.startsWith("/tjail") || command.startsWith("/togglejail")) && event.getPlayer().hasPermission("essentials.togglejail")) {
+			String[] args = command.split(" ");
+			if (args.length > 1) {
+				OfflinePlayer unbanned = Bukkit.getServer().getOfflinePlayer(args[1]);
+				if (unbanned != null) {
+					for (Player cannotify : Bukkit.getServer().getOnlinePlayers()) {
+						if (cannotify.hasPermission("warhub.notify")) {
+							cannotify.sendMessage(ChatColor.RED + "Player" + event.getPlayer().getName() + " has jailed/unjailed the player " + unbanned.getName());
+						}	
+					}
+				}
+			}
+		}
 
 	}
 
-	private String Capslock(Player player, String message) {
+	public String Capslock(Player player, String message) {
 		int countChars = 0;
 		int countCharsCaps = 0;
 
@@ -185,7 +221,7 @@ public class WarhubModChatListener implements Listener {
 				for (int i = 0; i < countChars; i++) {
 					char c = message.charAt(i);
 					String ch = Character.toString(c);
-					if (ch.matches("[A-Z]")) {
+					if (ch.matches("[A-Z!?]")) {
 						countCharsCaps++;
 					}
 				}
@@ -209,12 +245,14 @@ public class WarhubModChatListener implements Listener {
 										+ " Do not type in caps!");
 					} else {
 						player.sendMessage(ChatColor.YELLOW
-								+ "Do not type in all caps ["
-								+ getWarnings(player) + " Violations]");
+								+ "Do not type in all caps please!");
+						/*
+						 * Removed this due to it being RLLY annoying
 						sendToMods(ChatColor.DARK_RED + "[WHChat] "
 								+ ChatColor.WHITE + player.getDisplayName()
 								+ ChatColor.YELLOW + " all caps'd ["
 								+ getWarnings(player) + " Violations]");
+								*/
 					}
 				}
 			}
@@ -224,12 +262,10 @@ public class WarhubModChatListener implements Listener {
 	}
 
 	private int getWarnings(Player key) {
-		if (plugin.warnings.get(key.getName()) != null) {
-			return plugin.warnings.get(key.getName());
-		} else {
+		if (plugin.warnings.get(key.getName()) == null) {
 			plugin.warnings.put(key.getName(), 0);
 		}
-		return 0;
+		return plugin.warnings.get(key.getName());
 	}
 
 	private void sendToMods(String message) {

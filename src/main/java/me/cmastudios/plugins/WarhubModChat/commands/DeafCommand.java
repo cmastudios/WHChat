@@ -1,8 +1,8 @@
 package me.cmastudios.plugins.WarhubModChat.commands;
 
 import me.cmastudios.plugins.WarhubModChat.WarhubModChat;
-import me.cmastudios.plugins.WarhubModChat.util.PlayerInfo;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,34 +25,42 @@ public class DeafCommand implements CommandExecutor {
 		if (args.length < 1) {
 			player.sendMessage(ChatColor.YELLOW + "Deafened players:");
 			String plrs = "";
-			for (Player plr : plugin.ignores.keySet()) {
-				plrs += plr.getDisplayName() + ", ";
+			for (String plr : plugin.ignores) {
+				plrs += plr + ", ";
 			}
 			player.sendMessage(ChatColor.YELLOW + plrs);
 			player.sendMessage(ChatColor.YELLOW
 					+ "Use /deaf <player> to deafen someone.");
 			return true;
 		} else if (args.length == 1) {
-			Player todeafen = PlayerInfo.toPlayer(args[0]);
+			// One argument, mute the player
+			String todeafenstring;
+			Player todeafen = Bukkit.getServer().getPlayer(args[0]);
+			if (todeafen != null) {
+				todeafenstring = todeafen.getName();
+			} else {
+				sender.sendMessage(ChatColor.RED + args[0] + " is not online.");
+			    return true;	
+			}
 			if (todeafen == player) {
-				if (plugin.ignores.containsKey(player)) {
-					plugin.ignores.remove(player);
+				if (plugin.ignores.contains(todeafenstring)) {
+					plugin.ignores.remove(todeafen);
 					todeafen.sendMessage(ChatColor.YELLOW
 							+ "You have been undeafened.");
 				} else {
-					plugin.ignores.put(player, "");
+					plugin.ignores.add(todeafenstring);
 					todeafen.sendMessage(ChatColor.YELLOW
 							+ "You have been deafened.");
 				}
 			} else if (player.hasPermission("warhub.moderator")) {
-				if (plugin.ignores.containsKey(todeafen)) {
+				if (plugin.ignores.contains(todeafenstring)) {
 					plugin.ignores.remove(todeafen);
 					player.sendMessage(ChatColor.YELLOW
 							+ todeafen.getName() + " has been undeafened.");
 					todeafen.sendMessage(ChatColor.YELLOW
 							+ "You have been undeafened.");
 				} else {
-					plugin.ignores.put(todeafen, "");
+					plugin.ignores.add(todeafenstring);
 					player.sendMessage(ChatColor.YELLOW
 							+ todeafen.getName() + " has been deafened.");
 					todeafen.sendMessage(ChatColor.YELLOW

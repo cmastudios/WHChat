@@ -3,7 +3,9 @@ package me.cmastudios.plugins.WarhubModChat.commands;
 import me.cmastudios.plugins.WarhubModChat.WarhubModChat;
 import me.cmastudios.plugins.WarhubModChat.util.PlayerInfo;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,11 +33,12 @@ public class MuteCommand implements CommandExecutor {
 		} else if (args.length == 1) {
 			// One argument, mute the player
 			String tomute;
-			if (PlayerInfo.isPlayer(args[0])) {
-				tomute = PlayerInfo.PlayerToString(PlayerInfo.toPlayer(args[0]));
+			OfflinePlayer tomuteplayer = Bukkit.getServer().getOfflinePlayer(args[0]);
+			if (tomuteplayer != null) {
+				tomute = tomuteplayer.getName();
 			} else {
-				sender.sendMessage(ChatColor.RED + args[0] + " is not online. Make sure name is exactly right");
-				tomute = args[0];
+				sender.sendMessage(ChatColor.RED + args[0] + " has never joined the server before!");
+			    return true;	
 			}
 			if (sender.hasPermission("warhub.moderator")) {
 				if (plugin.mutedplrs.containsKey(tomute)) {

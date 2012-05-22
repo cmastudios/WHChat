@@ -1,6 +1,7 @@
 package me.cmastudios.plugins.WarhubModChat.commands;
 
 import me.cmastudios.plugins.WarhubModChat.WarhubModChat;
+import me.cmastudios.plugins.WarhubModChat.util.Channel;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -31,7 +32,7 @@ public class ChannelCommand implements CommandExecutor {
 		if (args.length < 1) {
 			if (!player.hasPermission("warhub.moderator")) {
 				player.sendMessage(ChatColor.RED
-						+ "You're not a mod, and cannot change channels.");
+						+ "You're not a mod so you can't change channels.");
 				return true;
 			} else {
 				player.sendMessage(ChatColor.RED
@@ -52,7 +53,7 @@ public class ChannelCommand implements CommandExecutor {
 						+ "You don't have the permissions to do that!");
 				return true;
 			}
-			plugin.channels.put(player, "mod");
+			plugin.channels.put(player, Channel.MODCHAT);
 			player.sendMessage(ChatColor.YELLOW + "Chat switched to mod.");
 			return true;
 		}
@@ -63,7 +64,7 @@ public class ChannelCommand implements CommandExecutor {
 						+ "You don't have the permissions to do that!");
 				return true;
 			}
-			plugin.channels.put(player, "alert");
+			plugin.channels.put(player, Channel.ALERT);
 			player.sendMessage(ChatColor.YELLOW + "Chat switched to alert.");
 			return true;
 		}

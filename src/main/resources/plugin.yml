@@ -1,6 +1,6 @@
 name: WHChat
 main: me.cmastudios.plugins.WarhubModChat.WarhubModChat
-version: 0.2.5(5/11/12)
+version: 0.2.5(5/22/12)
 author: cmastudios
 softdepend: [dynmap]
 description: |
@@ -44,3 +44,12 @@ commands:
         description: Send a raw message
         usage: /<command> <message>
         permission: message.raw
+permissions:
+    warhub.moderator:
+        description: Moderation commands
+        default: op
+        children:
+            warhub.notify: true
+    warhub.notify:
+        description: Get notified of moderation actions
+        default: op

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.cmastudios.plugins.WarhubModChat.WarhubModChat;
+import me.cmastudios.plugins.WarhubModChat.util.Channel;
 import me.cmastudios.plugins.WarhubModChat.util.Config;
 import me.cmastudios.plugins.WarhubModChat.util.Message;
 
@@ -16,9 +17,11 @@ import org.bukkit.entity.Player;
 
 public class QuickMessageCommand implements CommandExecutor {
 	public static WarhubModChat plugin;
-    public QuickMessageCommand(WarhubModChat instance) {
-        plugin = instance;
-    }
+
+	public QuickMessageCommand(WarhubModChat instance) {
+		plugin = instance;
+	}
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String arg2,
 			String[] args) {
@@ -34,10 +37,11 @@ public class QuickMessageCommand implements CommandExecutor {
 			}
 			if (args.length < 1) {
 				if (player == null) {
-					System.out.println("You can't use channels from the console, use '/modchat <message>' to chat.");
+					System.out
+							.println("You can't use channels from the console, use '/modchat <message>' to chat.");
 					return true;
 				}
-				plugin.channels.put(player, "mod");
+				plugin.channels.put(player, Channel.MODCHAT);
 				player.sendMessage(ChatColor.YELLOW + "Chat switched to mod.");
 			} else {
 				String message = "";
@@ -54,22 +58,22 @@ public class QuickMessageCommand implements CommandExecutor {
 						}
 					}
 					for (Player p : sendto) {
-						p.sendMessage(Message.colorizeText(Config
-								.config.getString("modchat-format")
-								.replace("%player", "tommytony")
-								.replace("%message", message)));
+						p.sendMessage(Message.colorizeText(Config.config
+								.getString("modchat-format").replace("%player",
+										"tommytony").replace("%message",
+										message)));
 					}
 					System.out.println("[MODCHAT] tommytony: " + message);
 					sendto.clear();
 					return true;
 				}
 				if (plugin.channels.containsKey(player)) {
-					String channel = plugin.channels.remove(player);
+					Channel channel = plugin.channels.remove(player);
+					plugin.channels.put(player, Channel.MODCHAT);
 					player.chat(message);
 					plugin.channels.put(player, channel);
-					channel = null;
 				} else {
-					plugin.channels.put(player, "mod");
+					plugin.channels.put(player, Channel.MODCHAT);
 					player.chat(message);
 					plugin.channels.remove(player);
 				}
@@ -79,7 +83,8 @@ public class QuickMessageCommand implements CommandExecutor {
 		}
 		if (cmd.getName().equalsIgnoreCase("alert")) {
 			if (player == null) {
-				System.out.println("You can't use alert from the console, use '/say <message>' to chat.");
+				System.out
+						.println("You can't use alert from the console, use '/say <message>' to chat.");
 				return true;
 			}
 			if (!player.hasPermission("warhub.moderator")) {
@@ -88,8 +93,10 @@ public class QuickMessageCommand implements CommandExecutor {
 				return true;
 			}
 			if (args.length < 1) {
-				plugin.channels.put(player, "alert");
-				player.sendMessage(ChatColor.YELLOW + "Chat switched to alert.");
+				plugin.channels.put(player, Channel.ALERT);
+				player
+						.sendMessage(ChatColor.YELLOW
+								+ "Chat switched to alert.");
 			} else {
 				String message = "";
 				for (String arg : args) {
@@ -98,12 +105,12 @@ public class QuickMessageCommand implements CommandExecutor {
 				if (message.equals(""))
 					return false;
 				if (plugin.channels.containsKey(player)) {
-					String channel = plugin.channels.remove(player);
+					Channel channel = plugin.channels.remove(player);
+					plugin.channels.put(player, Channel.ALERT);
 					player.chat(message);
 					plugin.channels.put(player, channel);
-					channel = null;
 				} else {
-					plugin.channels.put(player, "alert");
+					plugin.channels.put(player, Channel.ALERT);
 					player.chat(message);
 					plugin.channels.remove(player);
 				}
@@ -113,7 +120,8 @@ public class QuickMessageCommand implements CommandExecutor {
 		}
 		if (cmd.getName().equalsIgnoreCase("global")) {
 			if (player == null) {
-				System.out.println("You can't use global from the console, use '/say <message>' to chat.");
+				System.out
+						.println("You can't use global from the console, use '/say <message>' to chat.");
 				return true;
 			}
 			if (args.length < 1) {
@@ -128,7 +136,7 @@ public class QuickMessageCommand implements CommandExecutor {
 				if (message.equals(""))
 					return false;
 				if (plugin.channels.containsKey(player)) {
-					String channel = plugin.channels.remove(player);
+					Channel channel = plugin.channels.remove(player);
 					player.chat(message);
 					plugin.channels.put(player, channel);
 					channel = null;
