@@ -29,7 +29,7 @@ public class WarhubModChat extends JavaPlugin {
 	
 	Message messageUtil = new Message();
 	String version;
-	Logger log = getLogger();
+	Logger log;
 	private final WarhubModChatListener Listener = new WarhubModChatListener(this);
 	public HashMap<Player, Channel> channels = new HashMap<Player, Channel>();
 	public List<String> ignores = new ArrayList<String>();
@@ -57,6 +57,7 @@ public class WarhubModChat extends JavaPlugin {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable() {
+		log = getLogger();
 		Config.setup(getConfig());
 		try {
 			warnings = (HashMap<String, Integer>) SLAPI.load("warnings.bin");
