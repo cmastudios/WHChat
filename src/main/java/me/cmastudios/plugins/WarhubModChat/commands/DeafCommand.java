@@ -44,7 +44,7 @@ public class DeafCommand implements CommandExecutor {
 			}
 			if (todeafen == player) {
 				if (plugin.ignores.contains(todeafenstring)) {
-					plugin.ignores.remove(todeafen);
+					plugin.ignores.remove(todeafenstring);
 					todeafen.sendMessage(ChatColor.YELLOW
 							+ "You have been undeafened.");
 				} else {
@@ -54,7 +54,7 @@ public class DeafCommand implements CommandExecutor {
 				}
 			} else if (player.hasPermission("warhub.moderator")) {
 				if (plugin.ignores.contains(todeafenstring)) {
-					plugin.ignores.remove(todeafen);
+					plugin.ignores.remove(todeafenstring);
 					player.sendMessage(ChatColor.YELLOW
 							+ todeafen.getName() + " has been undeafened.");
 					todeafen.sendMessage(ChatColor.YELLOW
