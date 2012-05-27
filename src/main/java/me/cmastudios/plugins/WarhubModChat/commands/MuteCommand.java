@@ -9,6 +9,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class MuteCommand implements CommandExecutor {
 	public static WarhubModChat plugin;
@@ -33,12 +34,12 @@ public class MuteCommand implements CommandExecutor {
 		} else if (args.length == 1) {
 			// One argument, mute the player
 			String tomute;
-			OfflinePlayer tomuteplayer = Bukkit.getServer().getOfflinePlayer(args[0]);
-			if (tomuteplayer != null) {
-				tomute = tomuteplayer.getName();
+			Player todeafen = Bukkit.getServer().getPlayer(args[0]);
+			if (todeafen != null) {
+				tomute = todeafen.getName();
 			} else {
-				sender.sendMessage(ChatColor.RED + args[0] + " has never joined the server before!");
-			    return true;	
+				sender.sendMessage(ChatColor.RED + args[0] + " is not online. Make sure name is exactly right");
+				tomute = args[0];
 			}
 			if (sender.hasPermission("warhub.moderator")) {
 				if (plugin.mutedplrs.containsKey(tomute)) {

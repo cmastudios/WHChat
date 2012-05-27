@@ -182,15 +182,17 @@ public class WarhubModChatListener implements Listener {
 		/*
 		 * Action messages
 		 */
+		if (Config.config.getString("showactions") == "false") return;
 		if (command.startsWith("/unban") && event.getPlayer().hasPermission("essentials.unban")) {
 			String[] args = command.split(" ");
 			if (args.length > 1) {
-				OfflinePlayer unbanned = Bukkit.getServer().getOfflinePlayer(args[1]);
-				if (unbanned != null) {
-					for (Player cannotify : Bukkit.getServer().getOnlinePlayers()) {
-						if (cannotify.hasPermission("warhub.notify")) {
-							cannotify.sendMessage(ChatColor.RED + "Player" + event.getPlayer().getName() + " has unbanned the player " + unbanned.getName());
-						}	
+				for (OfflinePlayer oplr : Bukkit.getServer().getOfflinePlayers()) {
+					if (oplr.getName().equals(args[1])) {
+						for (Player cannotify : Bukkit.getServer().getOnlinePlayers()) {
+							if (cannotify.hasPermission("warhub.notify")) {
+								cannotify.sendMessage(ChatColor.RED + "Player " + event.getPlayer().getName() + " has unbanned the player " + oplr.getName());
+							}	
+						}
 					}
 				}
 			}
@@ -198,12 +200,13 @@ public class WarhubModChatListener implements Listener {
 		if ((command.startsWith("/jail") || command.startsWith("/unjail") || command.startsWith("/tjail") || command.startsWith("/togglejail")) && event.getPlayer().hasPermission("essentials.togglejail")) {
 			String[] args = command.split(" ");
 			if (args.length > 1) {
-				OfflinePlayer unbanned = Bukkit.getServer().getOfflinePlayer(args[1]);
-				if (unbanned != null) {
-					for (Player cannotify : Bukkit.getServer().getOnlinePlayers()) {
-						if (cannotify.hasPermission("warhub.notify")) {
-							cannotify.sendMessage(ChatColor.RED + "Player" + event.getPlayer().getName() + " has jailed/unjailed the player " + unbanned.getName());
-						}	
+				for (OfflinePlayer oplr : Bukkit.getServer().getOfflinePlayers()) {
+					if (oplr.getName().equals(args[1])) {
+						for (Player cannotify : Bukkit.getServer().getOnlinePlayers()) {
+							if (cannotify.hasPermission("warhub.notify")) {
+								cannotify.sendMessage(ChatColor.RED + "Player " + event.getPlayer().getName() + " toggled jail on " + oplr.getName());
+							}	
+						}
 					}
 				}
 			}

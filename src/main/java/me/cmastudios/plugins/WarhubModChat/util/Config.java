@@ -25,7 +25,7 @@ public class Config {
 		} else if (config.getInt("blockspersecond") == 10) {
 			config.set("blockspersecond", 30);
 		}
-	
+		if (config.get("showactions")==null)config.set("showactions", "true");
 		try {
 			config.save(file);
 		} catch (IOException e) {
