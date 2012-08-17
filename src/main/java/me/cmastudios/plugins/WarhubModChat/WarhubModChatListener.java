@@ -16,7 +16,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -29,7 +29,7 @@ public class WarhubModChatListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerChat(final PlayerChatEvent event) {
+	public void onPlayerChat(final AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
 		if (plugin.mutedplrs.containsKey(player.getName())) {
 			event.setCancelled(true);

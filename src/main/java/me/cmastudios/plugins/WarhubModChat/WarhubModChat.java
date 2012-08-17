@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import me.cmastudios.plugins.WarhubModChat.commands.ChannelCommand;
@@ -31,7 +32,7 @@ public class WarhubModChat extends JavaPlugin {
 	String version;
 	Logger log;
 	private final WarhubModChatListener Listener = new WarhubModChatListener(this);
-	public HashMap<Player, Channel> channels = new HashMap<Player, Channel>();
+	public ConcurrentHashMap<Player, Channel> channels = new ConcurrentHashMap<Player, Channel>();
 	public List<String> ignores = new ArrayList<String>();
 	public HashMap<String, Integer> mutedplrs = new HashMap<String, Integer>();
 	public HashMap<String, Integer> warnings = new HashMap<String, Integer>();
