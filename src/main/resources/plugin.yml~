@@ -44,9 +44,6 @@ commands:
         description: Send a raw message
         usage: /<command> <message>
         permission: message.raw
-    top:
-        description: View cpu usage
-        usage: /<command>
 permissions:
     warhub.moderator:
         description: Moderation commands

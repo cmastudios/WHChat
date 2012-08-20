@@ -14,6 +14,7 @@ import me.cmastudios.plugins.WarhubModChat.commands.MuteCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.QuickMessageCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.RawMsgCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.SayCommand;
+import me.cmastudios.plugins.WarhubModChat.commands.TopCommand;
 import me.cmastudios.plugins.WarhubModChat.commands.WHChatCommand;
 import me.cmastudios.plugins.WarhubModChat.util.Channel;
 import me.cmastudios.plugins.WarhubModChat.util.Config;
@@ -87,6 +88,7 @@ public class WarhubModChat extends JavaPlugin {
 		getCommand("say").setExecutor(new SayCommand());
 		getCommand("whchat").setExecutor(new WHChatCommand());
 		getCommand("rawmsg").setExecutor(new RawMsgCommand());
+		getCommand("top").setExecutor(new TopCommand());
 
 		getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 
